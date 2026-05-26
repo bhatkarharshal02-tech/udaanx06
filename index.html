@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UdaanX - Digital Solutions</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Custom Scrollbar for Admin Panel */
+        .admin-scroll::-webkit-scrollbar { width: 6px; }
+        .admin-scroll::-webkit-scrollbar-track { background: transparent; }
+        .admin-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .dark .admin-scroll::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="min-h-screen font-sans transition-colors duration-300 overflow-x-hidden bg-slate-50 dark:bg-[#030914] text-[#071B3B] dark:text-white">
+
+    <!-- Toast Notification System -->
+    <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[150] hidden px-6 py-3 rounded-full shadow-2xl flex items-center space-x-3 transition-all duration-300 bg-slate-900 text-white dark:bg-slate-800 border border-slate-700">
+        <div id="toast-icon" class="bg-green-500 rounded-full p-1"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i></div>
+        <span id="toast-text" class="text-xs font-semibold">Notification</span>
+    </div>
+
+    <!-- Main Sticky Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 px-4 md:px-8 py-5 bg-transparent">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#hero" id="logoTrigger" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#071B3B] via-[#1E6BFF] to-[#00C2FF] overflow-hidden flex items-center justify-center shadow-lg shadow-blue-500/20 transform group-hover:scale-105 transition-transform duration-300 p-0.5">
+                    <div class="w-full h-full bg-white rounded-[10px] overflow-hidden p-0.5">
+                        <img src="https://res.cloudinary.com/daedhjpp5/image/upload/v1778941582/e863bcdb-6029-4797-bbfe-8447f26c7342_ydtwnq.jpg" alt="UdaanX Symbol" class="w-full h-full object-contain" />
+                    </div>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-[#1E6BFF] via-blue-500 to-[#00C2FF] bg-clip-text text-transparent">UdaanX</span>
+                    <span class="block text-[8px] tracking-widest uppercase font-black text-cyan-400">LEARN • INNOVATE • ELEVATE</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex items-center gap-7">
+                <a href="#services" class="font-semibold text-sm text-slate-600 dark:text-slate-300 hover:text-[#1E6BFF] transition-colors">Services</a>
+                <a href="#portfolio" class="font-semibold text-sm text-slate-600 dark:text-slate-300 hover:text-[#1E6BFF] transition-colors">Portfolio</a>
+                <a href="#contact" class="font-semibold text-sm text-slate-600 dark:text-slate-300 hover:text-[#1E6BFF] transition-colors">Contact</a>
+                <a href="#about" class="font-semibold text-sm text-slate-600 dark:text-slate-300 hover:text-[#1E6BFF] transition-colors">About</a>
+            </div>
+
+            <!-- Actions & Utility Buttons -->
+            <div class="hidden md:flex items-center gap-4">
+                <button id="themeToggleDesktop" class="p-2.5 rounded-xl border border-slate-300 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all text-slate-700 dark:text-yellow-400" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="moon" class="w-5 h-5 hidden dark:block text-slate-800 dark:text-yellow-400"></i>
+                </button>
+
+                <a href="#contact" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] hover:shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                    Start a Project <i data-lucide="navigation" class="w-4 h-4 rotate-45"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Buttons -->
+            <div class="flex md:hidden items-center gap-3">
+                <button id="themeToggleMobile" class="p-2 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-yellow-400">
+                    <i data-lucide="sun" class="w-4.5 h-4.5 dark:hidden"></i>
+                    <i data-lucide="moon" class="w-4.5 h-4.5 hidden dark:block"></i>
+                </button>
+                <button id="mobileMenuBtn" class="p-2 rounded-lg border border-slate-300 dark:border-slate-800 text-[#1E6BFF]">
+                    <i data-lucide="menu" id="menuIcon" class="w-6 h-6 block"></i>
+                    <i data-lucide="x" id="closeIcon" class="w-6 h-6 hidden"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobileMenu" class="hidden absolute top-full left-0 right-0 bg-white dark:bg-[#030914] border-b border-slate-200 dark:border-slate-800 px-6 py-6 shadow-2xl flex flex-col gap-5 z-50 text-slate-900 dark:text-white">
+            <a href="#services" class="mobile-link text-lg font-medium hover:text-[#1E6BFF]">Services</a>
+            <a href="#portfolio" class="mobile-link text-lg font-medium hover:text-[#1E6BFF]">Portfolio</a>
+            <a href="#contact" class="mobile-link text-lg font-medium hover:text-[#1E6BFF]">Contact</a>
+            <a href="#about" class="mobile-link text-lg font-medium hover:text-[#1E6BFF]">About</a>
+            <div class="h-[1px] bg-slate-200 dark:bg-slate-800 my-2"></div>
+            <a href="#contact" class="mobile-link w-full text-center py-3 rounded-xl bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] font-semibold text-sm flex items-center justify-center gap-2 text-white">
+                Start a Project <i data-lucide="navigation" class="w-4 h-4 rotate-45"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative pt-36 pb-24 md:pt-48 md:pb-36 overflow-hidden">
+        <!-- Floating subtle backgrounds -->
+        <div class="absolute top-1/4 left-1/10 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/10 w-[450px] h-[450px] bg-cyan-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-20 right-1/4 w-72 h-72 bg-blue-900/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Dynamic Abstract Grid Background -->
+        <div class="absolute inset-0 opacity-[0.06] dark:opacity-[0.12] pointer-events-none">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="0.5" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+                <path d="M 100 800 Q 500 600 900 200 T 1500 50" fill="none" stroke="#1E6BFF" stroke-width="1.5" stroke-dasharray="5,5" />
+            </svg>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left Content -->
+                <div class="lg:col-span-7 flex flex-col space-y-6 text-left">
+                    <div class="inline-flex items-center gap-2 self-start px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 text-[#1E6BFF] dark:text-cyan-400 text-xs font-bold uppercase tracking-wider">
+                        <i data-lucide="navigation" class="w-3.5 h-3.5 rotate-45 text-[#1E6BFF]"></i>
+                        Learn • Innovate • Elevate
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-black leading-none tracking-tight">
+                        Building Practical <br />
+                        <span class="bg-gradient-to-r from-[#071B3B] via-[#1E6BFF] to-[#00C2FF] dark:from-white dark:via-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
+                            Digital Solutions
+                        </span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg md:text-xl font-medium max-w-xl text-slate-600 dark:text-slate-300">
+                        We help students, professionals, and early-stage startups build clean websites, custom software, and professional resumes without the high agency cost.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+                        <a href="#contact" class="px-8 py-4 rounded-2xl font-black text-center text-white bg-gradient-to-r from-[#1E6BFF] via-blue-600 to-[#00C2FF] shadow-xl shadow-blue-500/25 hover:shadow-blue-500/45 transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                            Start Your Project
+                            <i data-lucide="navigation" class="w-5 h-5 rotate-45"></i>
+                        </a>
+                        <a href="#services" class="px-8 py-4 rounded-2xl font-bold text-center border transition-all flex items-center justify-center gap-2 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 dark:hover:bg-slate-900 dark:text-white">
+                            Our Services
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Right Visuals - Slide Show -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-[420px] aspect-square rounded-3xl bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-white/10 shadow-2xl overflow-hidden group">
+                        
+                        <!-- Slideshow Images Container -->
+                        <div id="slideshowContainer" class="absolute inset-0 w-full h-full">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Overlay gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#071B3B] via-[#071B3B]/40 to-transparent z-10 opacity-60 pointer-events-none"></div>
+
+                        <!-- Slideshow Controls / Indicators -->
+                        <div id="slideshowDots" class="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Admin Alert Pill -->
+                        <div id="adminActivePill" class="hidden absolute top-4 right-4 z-30 px-3 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-bold shadow-lg flex items-center gap-1.5">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Admin Active
+                        </div>
+                        
+                        <div class="absolute top-4 left-4 z-20">
+                            <span class="text-[9px] font-mono text-cyan-300 bg-[#071B3B]/80 px-3 py-1 rounded-full border border-white/10 flex items-center gap-1 backdrop-blur-sm">
+                                <i data-lucide="rocket" class="w-3 h-3"></i> Project Showcase
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 relative border-t border-slate-300/10 dark:border-slate-800/40">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+                <div class="max-w-2xl">
+                    <span class="text-xs font-black uppercase tracking-widest text-[#1E6BFF]">Our Services</span>
+                    <h2 class="text-3xl md:text-4xl font-black mt-2">Services Built for Practical Projects</h2>
+                </div>
+                <p class="mt-3 md:mt-0 text-slate-600 dark:text-slate-300 text-base md:text-lg max-w-md md:text-right">
+                    Explore our range of digital and development solutions tailored to meet your timeline and specific budget.
+                </p>
+            </div>
+
+            <!-- Dynamic Services Grid (Horizontal Layout) -->
+            <div id="servicesGrid" class="flex flex-col gap-6">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-xs font-black uppercase tracking-widest text-[#1E6BFF]">Our Work</span>
+                    <h2 class="text-3xl md:text-4xl font-black mt-2">Latest Completed Projects</h2>
+                </div>
+                
+                <!-- Filter Tabs -->
+                <div id="portfolioTabs" class="flex flex-wrap gap-1.5 mt-6 md:mt-0 bg-slate-500/10 p-1.5 rounded-xl border border-slate-300/20 dark:border-white/5">
+                    <button data-tab="all" class="portfolio-tab-btn active px-4 py-2 rounded-lg text-xs font-bold capitalize transition-all bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] text-white shadow-md">all</button>
+                    <button data-tab="web" class="portfolio-tab-btn px-4 py-2 rounded-lg text-xs font-bold capitalize transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">web</button>
+                    <button data-tab="design" class="portfolio-tab-btn px-4 py-2 rounded-lg text-xs font-bold capitalize transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">design</button>
+                    <button data-tab="branding" class="portfolio-tab-btn px-4 py-2 rounded-lg text-xs font-bold capitalize transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">branding</button>
+                    <button data-tab="academic" class="portfolio-tab-btn px-4 py-2 rounded-lg text-xs font-bold capitalize transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">academic</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Portfolio Grid -->
+            <div id="portfolioGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                
+                <!-- Left side details -->
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-xs font-black uppercase tracking-widest text-[#1E6BFF]">Let's Connect</span>
+                    <h2 class="text-3xl md:text-4xl font-black">Start Your Project Journey</h2>
+                    <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                        Have a project idea? Or need technical assistance for your academic presentation and research layout? Write to us or reach out directly.
+                    </p>
+
+                    <div class="space-y-4 pt-4">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-[#1E6BFF]/10 text-[#1E6BFF] border border-blue-500/10">
+                                <i data-lucide="mail" class="w-5 h-5 text-cyan-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold font-mono tracking-wider">Direct Email</p>
+                                <a href="#" class="disp-email text-sm font-bold hover:underline">contact@udaanx.com</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-[#1E6BFF]/10 text-[#1E6BFF] border border-blue-500/10">
+                                <i data-lucide="phone" class="w-5 h-5 text-cyan-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold font-mono tracking-wider">Call Us</p>
+                                <a href="#" class="disp-phone text-sm font-bold hover:underline">+91 98765 43210</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 rounded-xl bg-[#1E6BFF]/10 text-[#1E6BFF] border border-blue-500/10">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-cyan-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold font-mono tracking-wider">Location</p>
+                                <p class="disp-loc text-sm font-bold">Noida, NCR Delhi, India</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map Embed Simulator -->
+                    <div class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-800 h-44 bg-slate-200 dark:bg-slate-900/40 relative">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-[#1E6BFF]/10 to-transparent flex items-center justify-center">
+                            <div class="text-center p-4">
+                                <i data-lucide="map-pin" class="w-7 h-7 mx-auto text-[#1E6BFF] mb-2"></i>
+                                <p class="text-xs font-bold text-slate-800 dark:text-white">UdaanX Project Office</p>
+                                <p class="disp-loc text-[10px] text-slate-500 dark:text-slate-400 mt-1">Noida, National Capital Region (NCR), India</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right side form -->
+                <div class="lg:col-span-7 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071B3B]/70 shadow-2xl relative">
+                    <h3 class="text-lg font-bold mb-6">Describe Your Requirements</h3>
+                    
+                    <div id="formFeedback" class="hidden p-4 rounded-xl text-xs mb-6 font-semibold items-center gap-2">
+                        <!-- Injected via JS -->
+                    </div>
+
+                    <form id="contactForm" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Your Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="contactName" class="w-full p-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#1E6BFF]/45 bg-slate-50 dark:bg-[#030914]/40 border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white" placeholder="e.g. Rahul Sharma" required />
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Email Address <span class="text-red-500">*</span></label>
+                                <input type="email" id="contactEmail" class="w-full p-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#1E6BFF]/45 bg-slate-50 dark:bg-[#030914]/40 border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white" placeholder="e.g. rahul@example.com" required />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Phone Number</label>
+                                <input type="tel" id="contactPhone" class="w-full p-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#1E6BFF]/45 bg-slate-50 dark:bg-[#030914]/40 border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white" placeholder="+91 XXXXX XXXXX" />
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Service Needed</label>
+                                <select id="contactService" class="w-full p-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#1E6BFF]/45 bg-slate-50 dark:bg-[#030914]/40 border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white">
+                                    <!-- Injected via JS -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Project Brief & Details <span class="text-red-500">*</span></label>
+                            <textarea id="contactMsg" rows="4" class="w-full p-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#1E6BFF]/45 bg-slate-50 dark:bg-[#030914]/40 border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white" placeholder="Briefly describe what you would like to build or discuss..." required></textarea>
+                        </div>
+
+                        <button type="submit" id="contactSubmitBtn" class="w-full py-4 rounded-xl text-xs font-extrabold text-white bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] hover:shadow-lg hover:shadow-blue-500/20 transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i> Submit Requirements
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-24 bg-slate-100/60 dark:bg-[#071630] relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-black uppercase tracking-widest text-[#1E6BFF]">About Us</span>
+                <h2 class="text-3xl md:text-4xl font-black mt-2">Helping You Build Your Digital Ideas</h2>
+                <p class="mt-3 text-slate-600 dark:text-slate-300 text-base md:text-lg">
+                    At UdaanX, we focus on helping students, independent professionals, and emerging startups build clean, practical digital tools that achieve real goals.
+                </p>
+            </div>
+
+            <!-- Interactive Steps -->
+            <div class="max-w-4xl mx-auto bg-white/50 dark:bg-[#030914]/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 md:p-8 mb-16 shadow-xl">
+                <div class="flex justify-center border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
+                    <div class="flex gap-2 p-1.5 bg-slate-200 dark:bg-slate-900/80 rounded-xl border border-transparent dark:border-white/5">
+                        <button id="tab-learn" class="about-tab-btn active px-5 py-2.5 rounded-lg text-xs font-extrabold flex items-center gap-2 transition-all bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] text-white shadow-lg">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> Learn
+                        </button>
+                        <button id="tab-innovate" class="about-tab-btn px-5 py-2.5 rounded-lg text-xs font-extrabold flex items-center gap-2 transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                            <i data-lucide="zap" class="w-4 h-4"></i> Innovate
+                        </button>
+                        <button id="tab-elevate" class="about-tab-btn px-5 py-2.5 rounded-lg text-xs font-extrabold flex items-center gap-2 transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200">
+                            <i data-lucide="rocket" class="w-4 h-4"></i> Elevate
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="transition-all duration-300 relative min-h-[180px]">
+                    
+                    <!-- Learn Content -->
+                    <div id="content-learn" class="about-content grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <span class="text-xs font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider block mb-2">Phase One</span>
+                            <h4 class="text-xl font-bold mb-3">Academic Foundation</h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">We assist students in understanding core tech frameworks, formatting documents in LaTeX, and building practical code step-by-step.</p>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-900/80 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+                            <h5 class="font-extrabold text-blue-600 dark:text-blue-400 mb-2.5 flex items-center gap-2">
+                                <i data-lucide="book-open" class="w-4 h-4"></i> What we support:
+                            </h5>
+                            <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                                <li>✓ Student Project Consultation</li>
+                                <li>✓ LaTeX Document Formatting</li>
+                                <li>✓ Clear Code Commenting & Explanations</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Innovate Content -->
+                    <div id="content-innovate" class="about-content hidden grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500 dark:text-amber-400 uppercase tracking-wider block mb-2">Phase Two</span>
+                            <h4 class="text-xl font-bold mb-3">Clean Web & Code Building</h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">We focus on clean, reliable code with modern frameworks to turn your project briefs into working web applications, simple AI tools, or local business dashboards.</p>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-900/80 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+                            <h5 class="font-extrabold text-amber-600 dark:text-amber-400 mb-2.5 flex items-center gap-2">
+                                <i data-lucide="zap" class="w-4 h-4"></i> Technical Stacks:
+                            </h5>
+                            <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                                <li>✓ React.js & Tailwind CSS</li>
+                                <li>✓ Node.js & Express Backends</li>
+                                <li>✓ API Integrations & Database setups</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Elevate Content -->
+                    <div id="content-elevate" class="about-content hidden grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <span class="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider block mb-2">Phase Three</span>
+                            <h4 class="text-xl font-bold mb-3">Professional Presentation</h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">We help you present your work cleanly. From personal portfolio sites to clear resume designs and digital business cards, we set you up for success.</p>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-900/80 p-5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+                            <h5 class="font-extrabold text-cyan-600 dark:text-cyan-400 mb-2.5 flex items-center gap-2">
+                                <i data-lucide="rocket" class="w-4 h-4"></i> Personal Branding tools:
+                            </h5>
+                            <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                                <li>✓ Clean Resume Layout Planning</li>
+                                <li>✓ Digital Visiting Cards with QR Code</li>
+                                <li>✓ Professional Portfolio Landing Pages</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Founder Note & Mission Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-2xl border-2 border-blue-500/30 bg-white dark:bg-[#071B3B]/70 shadow-xl hover:-translate-y-1 transition-transform relative group overflow-hidden md:col-span-2">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-[#1E6BFF]"></div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder" class="w-10 h-10 rounded-full object-cover" />
+                        <div>
+                            <h4 class="font-bold text-sm">A Note from Our Founder</h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Aaryan Vardhan, Founder</p>
+                        </div>
+                    </div>
+                    <blockquote class="text-sm italic leading-relaxed text-slate-800 dark:text-slate-100">
+                        “UdaanX was started with a simple idea: help students, professionals, and early-stage founders get reliable digital work without confusing pricing or overcomplicated processes. We keep our explanations clear, our code clean, and our work simple.”
+                    </blockquote>
+                </div>
+
+                <div class="p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071B3B]/70 shadow-xl hover:-translate-y-1 transition-transform relative group overflow-hidden">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-cyan-400 to-emerald-500"></div>
+                    <div class="p-3 bg-teal-500/10 rounded-xl text-teal-600 dark:text-teal-400 w-fit mb-6">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Our Focus</h3>
+                    <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                        We provide custom and practical tech solutions that actually work. Whether it's a student assignment or a small business landing page, you get direct, dedicated support.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white border-t border-slate-200 dark:border-slate-900 pt-16 pb-8 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-slate-200 dark:border-slate-900">
+            
+            <div class="md:col-span-4 space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-white overflow-hidden flex items-center justify-center shadow-lg shadow-blue-500/10 p-0.5">
+                        <img src="https://res.cloudinary.com/daedhjpp5/image/upload/v1778941582/e863bcdb-6029-4797-bbfe-8447f26c7342_ydtwnq.jpg" alt="UdaanX Logo" class="w-full h-full object-contain" />
+                    </div>
+                    <span class="text-xl font-extrabold bg-gradient-to-r from-[#1E6BFF] via-blue-500 to-[#00C2FF] bg-clip-text text-transparent">UdaanX</span>
+                </div>
+                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm">
+                    We help students, professionals, and early-stage startup founders design and build practical websites, custom software dashboards, and clean resume setups.
+                </p>
+            </div>
+
+            <div class="md:col-span-2 space-y-3.5">
+                <h4 class="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-cyan-400">Navigation</h4>
+                <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400 font-semibold">
+                    <li><a href="#about" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">About Us</a></li>
+                    <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Our Services</a></li>
+                    <li><a href="#portfolio" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Portfolio</a></li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-3 space-y-3.5">
+                <h4 class="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-cyan-400">Services</h4>
+                <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400 font-semibold">
+                    <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Web Dev & AI integration</a></li>
+                    <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Resume & Profile Layouts</a></li>
+                    <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Academic Systems Mentorship</a></li>
+                    <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Digital Visiting Cards</a></li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-3 space-y-4">
+                <h4 class="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-cyan-400 font-mono">Newsletter</h4>
+                <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Subscribe to get helpful updates, templates, and discount updates.</p>
+                
+                <div id="newsletterFeedback" class="hidden text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/20"></div>
+
+                <form id="newsletterForm" class="flex gap-2">
+                    <input type="email" id="newsletterInput" placeholder="your@email.com" class="p-3 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white flex-grow focus:outline-none focus:ring-1 focus:ring-blue-500" required />
+                    <button type="submit" id="newsletterSubmitBtn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] text-white font-bold text-xs">Join</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 md:px-8 pt-8 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-500 font-medium">
+            <p>© 2026 UdaanX Innovations Private Limited. All Rights Reserved.</p>
+            <div class="flex gap-4 mt-4 sm:mt-0">
+                <a href="#about" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Terms of Service</a>
+                <span>•</span>
+                <a href="#about" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+            <button id="closeAdminLogin" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i data-lucide="shield" class="w-5 h-5 text-blue-600 dark:text-cyan-400"></i> Admin Access
+            </h3>
+            <form id="adminLoginForm" class="space-y-4">
+                <div id="loginError" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-lg border border-red-500/20"></div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Username</label>
+                    <input type="text" id="adminUser" class="w-full mt-1 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-cyan-500" required />
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Password</label>
+                    <input type="password" id="adminPass" class="w-full mt-1 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-cyan-500" required />
+                </div>
+                <button type="submit" id="adminLoginSubmit" class="w-full py-3 rounded-lg bg-[#1E6BFF] text-white text-sm font-bold flex justify-center items-center gap-2">Login</button>
+                <p class="text-[10px] text-center text-slate-500 mt-2">Hint: admin / admin123</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- FULL ADMIN DASHBOARD OVERLAY -->
+    <div id="adminDashboardOverlay" class="hidden fixed inset-0 z-[200] bg-slate-50 dark:bg-slate-900 flex flex-col">
+        <!-- Dashboard Header -->
+        <div class="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-blue-500/10 rounded-lg text-blue-600 dark:text-cyan-400">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-black text-slate-900 dark:text-white leading-none">UdaanX Admin</h2>
+                    <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">Control Panel</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="closeAdminDashboard" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Exit Admin
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Body -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Sidebar -->
+            <div class="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col">
+                <div class="p-4 space-y-2">
+                    <button class="admin-tab-btn active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold bg-[#1E6BFF]/10 text-[#1E6BFF] dark:text-cyan-400 transition-colors" data-target="admin-section-queries">
+                        <i data-lucide="message-square" class="w-4 h-4"></i> Customer Queries
+                    </button>
+                    <button class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors" data-target="admin-section-slider">
+                        <i data-lucide="image" class="w-4 h-4"></i> Hero Slideshow
+                    </button>
+                    <button class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors" data-target="admin-section-contact">
+                        <i data-lucide="phone-call" class="w-4 h-4"></i> Contact Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 p-8 overflow-y-auto admin-scroll bg-slate-50 dark:bg-[#030914]">
+                
+                <!-- QUERIES SECTION -->
+                <div id="admin-section-queries" class="admin-section block">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900 dark:text-white">Customer Queries</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Review contact form submissions.</p>
+                        </div>
+                        <div class="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Total Inquiries: <span id="totalQueriesCount" class="text-blue-600 dark:text-cyan-400 text-sm ml-1">0</span></span>
+                        </div>
+                    </div>
+                    
+                    <div id="queriesList" class="space-y-4">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- SLIDER SECTION -->
+                <div id="admin-section-slider" class="admin-section hidden max-w-3xl">
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white">Hero Slideshow</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage images displayed in the website header.</p>
+                    </div>
+                    
+                    <div class="mb-8 p-5 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <label class="text-sm font-bold text-slate-900 dark:text-slate-300 mb-3 block">Upload New Image</label>
+                        <input type="file" id="slideUploadInput" accept="image/*" class="w-full text-sm text-slate-600 dark:text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#1E6BFF]/10 file:text-[#1E6BFF] hover:file:bg-[#1E6BFF]/20 cursor-pointer" />
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-bold text-slate-900 dark:text-slate-300 mb-3 block flex items-center justify-between">
+                            Current Slides
+                            <span class="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md" id="slideCountDisplay">0 Images</span>
+                        </label>
+                        <div id="slideManagerList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTACT DETAILS SECTION -->
+                <div id="admin-section-contact" class="admin-section hidden max-w-2xl">
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white">Contact Details</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Update public contact information displayed on the website.</p>
+                    </div>
+
+                    <form id="adminContactForm" class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-5">
+                        
+                        <div id="adminContactFeedback" class="hidden p-3 rounded-xl text-xs font-semibold flex items-center gap-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25"></div>
+
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block mb-1.5">Public Email</label>
+                            <input type="email" id="adminInputEmail" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#030914]/50 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[#1E6BFF]" required />
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block mb-1.5">Phone Number</label>
+                            <input type="text" id="adminInputPhone" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#030914]/50 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[#1E6BFF]" required />
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block mb-1.5">Office Location</label>
+                            <input type="text" id="adminInputLocation" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#030914]/50 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-[#1E6BFF]" required />
+                        </div>
+                        <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+                            <button type="submit" id="adminContactSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] text-white text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/30 transition-all">
+                                <i data-lucide="save" class="w-4 h-4"></i> Save Contact Info
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- API Configuration ---
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let adminToken = localStorage.getItem('udaanx_admin_token') || null;
+
+        // Static Services Configuration
+        const servicesData = [
+            { id: 'ai-web', title: 'AI & Web Development', icon: 'brain', desc: 'We build modern, responsive web applications and help integrate practical AI tools like OpenAI APIs to automate your tasks.', color: 'from-blue-600 to-cyan-500', tags: ['React.js', 'OpenAI', 'Tailwind CSS', 'Node.js'] },
+            { id: 'digital-cards', title: 'Digital Business Cards', icon: 'briefcase', desc: 'Interactive digital business cards that make sharing your contact details easy with a simple QR code or shareable link.', color: 'from-blue-700 via-blue-600 to-cyan-500', tags: ['NFC Ready', 'QR Code', 'Contact Save', 'Mobile Friendly'] },
+            { id: 'branding', title: 'Resume & LinkedIn Branding', icon: 'file-text', desc: 'Professional resume layout and LinkedIn profile optimization designed to help you stand out to recruiters and pass basic screening systems.', color: 'from-[#1E6BFF] to-blue-800', tags: ['Resume Layout', 'ATS Optimization', 'LinkedIn Guide', 'Bio Copy'] },
+            { id: 'uiux', title: 'UI/UX Design', icon: 'layout', desc: 'Clean and user-friendly web layouts, wireframes, and design components created in Figma to plan your project before coding.', color: 'from-blue-800 to-cyan-600', tags: ['Figma', 'Wireframes', 'User Flows', 'Responsive Design'] },
+            { id: 'academic', title: 'Academic Projects & Guidance', icon: 'graduation-cap', desc: 'Practical engineering project guidance, source code explanations, and structural help to turn your academic ideas into working models.', color: 'from-indigo-600 to-blue-500', tags: ['Full-stack Code', 'IoT Models', 'Machine Learning', 'Project Help'] },
+            { id: 'research', title: 'Research & Paper Guidance', icon: 'award', desc: 'Structuring literature reviews, proofreading technical write-ups, and helping with LaTeX formatting for academic submissions.', color: 'from-blue-900 via-blue-700 to-cyan-500', tags: ['LaTeX Style', 'Structuring Help', 'Review and Edit'] },
+            { id: 'startup-brand', title: 'Startup Brand Setup', icon: 'sparkles', desc: 'Simple logos, clear pitch deck presentations, and basic visual assets to confidently launch your business concept.', color: 'from-[#1E6BFF] via-blue-600 to-cyan-400', tags: ['Logo Design', 'Pitch Decks', 'Brand Guidelines'] },
+            { id: 'mobile-apps', title: 'Mobile App Development', icon: 'smartphone', desc: 'Straightforward mobile apps for iOS and Android built on reliable, cross-platform frameworks.', color: 'from-cyan-600 to-blue-700', tags: ['React Native', 'Flutter', 'Basic Backend', 'Push Setup'] },
+            { id: 'portfolio-sites', title: 'Portfolio & Personal Websites', icon: 'globe', desc: 'Simple, fast-loading personal portfolios to showcase your skills, resume, and accomplishments directly to employers.', color: 'from-blue-600 to-cyan-600', tags: ['Fast Load', 'Clean Design', 'Contact Forms', 'SEO Friendly'] }
+        ];
+
+        // Fallback or Dynamic Portfolio Data
+        let portfolioData = [];
+
+        // Dynamic State Variables
+        let isAdmin = false;
+        let currentSlide = 0;
+        let slideInterval = null;
+        
+        let heroImages = [];
+        let contactInfo = {
+            email: 'contact@udaanx.com',
+            phone: '+91 98765 43210',
+            location: 'Noida, NCR Delhi, India'
+        };
+        let customerQueries = [];
+        let logoClickCount = 0;
+        let logoClickTimer = null;
+        
+        // --- Initialization & Data Fetching ---
+
+        async function init() {
+            // Loading Spinner Or Local fallback init
+            showToast("Connecting to live server...");
+            await fetchSiteConfig();
+            await fetchPortfolio();
+            
+            renderServices();
+            populateServiceDropdown();
+            lucide.createIcons();
+            
+            // Check theme preference
+            if(localStorage.getItem('theme') === 'light') {
+                htmlEl.classList.remove('dark');
+            }
+
+            // Restore Admin Session if already logged in previously
+            if (adminToken) {
+                isAdmin = true;
+                document.getElementById('adminActivePill').classList.remove('hidden');
+            }
+        }
+
+        // Fetch Configuration from Cloud Database
+        async function fetchSiteConfig() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/config`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.contactInfo) contactInfo = data.contactInfo;
+                    if (data.heroImages) heroImages = data.heroImages;
+                }
+            } catch (err) {
+                console.warn("Backend down. Using local fallback.");
+                // Load LocalStorage Backup if Server fails
+                const savedSlides = localStorage.getItem('udaanx_slider');
+                if (savedSlides) heroImages = JSON.parse(savedSlides);
+                else heroImages = [
+                    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80'
+                ];
+
+                const savedContact = localStorage.getItem('udaanx_contact');
+                if (savedContact) contactInfo = JSON.parse(savedContact);
+            }
+            
+            applyContactInfoDOM();
+            renderSlideshow();
+            startSlideshow();
+        }
+
+        // Fetch Portfolio Projects from Database
+        async function fetchPortfolio() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/portfolio`);
+                if (res.ok) {
+                    portfolioData = await res.json();
+                } else {
+                    throw new Error("No portfolio");
+                }
+            } catch (err) {
+                // Mock Portfolio fallback
+                portfolioData = [
+                    { id: 1, title: 'Student Portfolio Website', category: 'web', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', desc: 'A personal showcase website for a computer science graduate to display projects and get recruiter inquiries.' },
+                    { id: 2, title: 'Digital Visiting Card for Consultant', category: 'branding', image: 'https://images.unsplash.com/photo-1589561084283-930aa7b1ce50?auto=format&fit=crop&w=800&q=80', desc: 'An interactive mobile-friendly profile with a downloadable contact file and links for a financial advisor.' },
+                    { id: 3, title: 'UI Design for Local Business', category: 'design', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80', desc: 'A friendly, accessible interface layout and wireframe set created in Figma for a local delivery service.' },
+                    { id: 4, title: 'Academic Project Dashboard', category: 'academic', image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80', desc: 'A responsive web dashboard tracking sensor data and analytics built as part of an IoT capstone model.' },
+                    { id: 5, title: 'SaaS Landing Page Setup', category: 'web', image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800&q=80', desc: 'A clean single-page site with transparent pricing options and email subscription integration.' },
+                    { id: 6, title: 'Resume Website for Job Seeker', category: 'branding', image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80', desc: 'A simple one-page resume site with direct download buttons, skill bars, and a fast contact form.' }
+                ];
+            }
+            renderPortfolio('all');
+        }
+
+        // --- Render Functions (Frontend UI) ---
+
+        function renderServices() {
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = servicesData.map(svc => `
+                <div class="p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071B3B]/70 shadow-lg hover:shadow-2xl hover:border-blue-500/50 transition-all duration-300 group flex flex-col md:flex-row gap-6 items-start md:items-center">
+                    <div class="flex-shrink-0 flex items-center gap-5 md:w-1/3">
+                        <div class="p-4 rounded-xl bg-gradient-to-tr ${svc.color} text-white shadow-md transform group-hover:scale-105 transition-transform flex-shrink-0">
+                            <i data-lucide="${svc.icon}" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-[9px] uppercase font-bold text-[#1E6BFF] dark:text-cyan-400 tracking-wider block mb-1">Active Service</span>
+                            <h3 class="text-lg font-extrabold group-hover:text-[#1E6BFF] dark:group-hover:text-cyan-400 transition-colors">${svc.title}</h3>
+                        </div>
+                    </div>
+                    <div class="md:w-1/3">
+                        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">${svc.desc}</p>
+                    </div>
+                    <div class="md:w-1/3 flex flex-col items-start md:items-end gap-4 w-full">
+                        <div class="flex flex-wrap gap-1.5 md:justify-end">
+                            ${svc.tags.map(tag => `<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/5 dark:bg-white/5 text-slate-600 dark:text-slate-300 border border-slate-500/10">${tag}</span>`).join('')}
+                        </div>
+                        <a href="#contact" onclick="document.getElementById('contactService').value='${svc.id}'" class="inline-flex items-center gap-2 text-xs font-bold text-[#1E6BFF] dark:text-cyan-400 hover:gap-3 transition-all group-hover:underline tracking-wider mt-1">
+                            Enquire Pack <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPortfolio(filterCategory) {
+            const grid = document.getElementById('portfolioGrid');
+            const filtered = filterCategory === 'all' ? portfolioData : portfolioData.filter(p => p.category === filterCategory);
+            
+            grid.innerHTML = filtered.map(proj => `
+                <div class="group rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071B3B]/70 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-slate-900">
+                        <img src="${proj.image}" alt="${proj.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/30 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-6">
+                            <a href="#contact" class="px-4 py-2 rounded-lg bg-white text-slate-900 font-bold text-xs flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 shadow-lg">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Enquire Similar
+                            </a>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-blue-600 dark:text-cyan-400 tracking-wider font-mono">${proj.category} Work</span>
+                            <h3 class="text-lg font-bold mt-1 group-hover:text-[#1E6BFF] dark:group-hover:text-cyan-400 transition-colors">${proj.title}</h3>
+                            <p class="text-xs mt-2 text-slate-600 dark:text-slate-300 leading-relaxed">${proj.desc}</p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/60 flex items-center justify-between text-xs font-semibold text-[#1E6BFF]">
+                            <span>View Project Setup</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function populateServiceDropdown() {
+            const select = document.getElementById('contactService');
+            select.innerHTML = servicesData.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+        }
+
+        function applyContactInfoDOM() {
+            document.querySelectorAll('.disp-email').forEach(el => { el.innerText = contactInfo.email; el.href = 'mailto:'+contactInfo.email; });
+            document.querySelectorAll('.disp-phone').forEach(el => { el.innerText = contactInfo.phone; el.href = 'tel:'+contactInfo.phone; });
+            document.querySelectorAll('.disp-loc').forEach(el => { el.innerText = contactInfo.location; });
+            
+            // Fill Admin Inputs
+            document.getElementById('adminInputEmail').value = contactInfo.email || '';
+            document.getElementById('adminInputPhone').value = contactInfo.phone || '';
+            document.getElementById('adminInputLocation').value = contactInfo.location || '';
+        }
+
+        // Slideshow rendering logic
+        function renderSlideshow() {
+            const container = document.getElementById('slideshowContainer');
+            const dotsContainer = document.getElementById('slideshowDots');
+            
+            if (heroImages.length === 0) {
+                container.innerHTML = `<div class="absolute inset-0 flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-500 text-sm">No images uploaded</div>`;
+                dotsContainer.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = heroImages.map((img, idx) => `
+                <img src="${img}" class="slide-img absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}" />
+            `).join('');
+
+            if (heroImages.length > 1) {
+                dotsContainer.innerHTML = heroImages.map((_, idx) => `
+                    <button onclick="goToSlide(${idx})" class="slide-dot w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'bg-cyan-400 w-6' : 'bg-white/50 hover:bg-white/80'}"></button>
+                `).join('');
+            } else {
+                dotsContainer.innerHTML = '';
+            }
+        }
+
+        function startSlideshow() {
+            if(slideInterval) clearInterval(slideInterval);
+            if(heroImages.length > 1) {
+                slideInterval = setInterval(() => {
+                    currentSlide = (currentSlide + 1) % heroImages.length;
+                    updateSlideshowDOM();
+                }, 4000);
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlideshowDOM();
+            startSlideshow();
+        }
+
+        function updateSlideshowDOM() {
+            const images = document.querySelectorAll('.slide-img');
+            const dots = document.querySelectorAll('.slide-dot');
+            
+            images.forEach((img, idx) => {
+                if (idx === currentSlide) {
+                    img.classList.remove('opacity-0', 'z-0');
+                    img.classList.add('opacity-100', 'z-10');
+                } else {
+                    img.classList.remove('opacity-100', 'z-10');
+                    img.classList.add('opacity-0', 'z-0');
+                }
+            });
+
+            dots.forEach((dot, idx) => {
+                if (idx === currentSlide) {
+                    dot.classList.add('bg-cyan-400', 'w-6');
+                    dot.classList.remove('bg-white/50');
+                } else {
+                    dot.classList.remove('bg-cyan-400', 'w-6');
+                    dot.classList.add('bg-white/50');
+                }
+            });
+        }
+        window.goToSlide = goToSlide;
+
+        // Custom Toast Helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            if (toast && toastText) {
+                toastText.innerText = message;
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 4000);
+            }
+        }
+
+        // --- Frontend DOM Events & Actions ---
+        const htmlEl = document.documentElement;
+        const navbar = document.getElementById('navbar');
+        const logoTrigger = document.getElementById('logoTrigger');
+        const themeToggles = [document.getElementById('themeToggleDesktop'), document.getElementById('themeToggleMobile')];
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuIcon = document.getElementById('menuIcon');
+        const closeIcon = document.getElementById('closeIcon');
+
+        // Dark/Light Theme Switcher
+        themeToggles.forEach(btn => {
+            btn.addEventListener('click', () => {
+                htmlEl.classList.toggle('dark');
+                localStorage.setItem('theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+            });
+        });
+
+        // Scroll Class Append
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-white/90', 'dark:bg-[#030914]/80', 'backdrop-blur-xl', 'shadow-lg', 'border-b', 'border-slate-200', 'dark:border-white/10');
+                navbar.classList.remove('bg-transparent', 'py-5');
+                navbar.classList.add('py-3');
+            } else {
+                navbar.classList.remove('bg-white/90', 'dark:bg-[#030914]/80', 'backdrop-blur-xl', 'shadow-lg', 'border-b', 'border-slate-200', 'dark:border-white/10', 'py-3');
+                navbar.classList.add('bg-transparent', 'py-5');
+            }
+        });
+
+        // Mobile drawer toggles
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden');
+            menuIcon.classList.toggle('block');
+            closeIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('block');
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                menuIcon.classList.add('block');
+                closeIcon.classList.add('hidden');
+                closeIcon.classList.remove('block');
+            });
+        });
+
+        // Portfolio Navigation Filters
+        document.querySelectorAll('.portfolio-tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.portfolio-tab-btn').forEach(b => {
+                    b.classList.remove('bg-gradient-to-r', 'from-[#1E6BFF]', 'to-[#00C2FF]', 'text-white', 'shadow-md');
+                    b.classList.add('text-slate-500', 'dark:text-slate-400');
+                });
+                const target = e.target;
+                target.classList.remove('text-slate-500', 'dark:text-slate-400');
+                target.classList.add('bg-gradient-to-r', 'from-[#1E6BFF]', 'to-[#00C2FF]', 'text-white', 'shadow-md');
+                renderPortfolio(target.getAttribute('data-tab'));
+            });
+        });
+
+        // Process Phase Tab views
+        const aboutTabs = ['learn', 'innovate', 'elevate'];
+        aboutTabs.forEach(tab => {
+            document.getElementById(`tab-${tab}`).addEventListener('click', () => {
+                aboutTabs.forEach(t => {
+                    const btn = document.getElementById(`tab-${t}`);
+                    if(t === tab) {
+                        btn.classList.add('bg-gradient-to-r', 'from-[#1E6BFF]', 'to-[#00C2FF]', 'text-white', 'shadow-lg');
+                        btn.classList.remove('text-slate-500', 'dark:text-slate-400');
+                    } else {
+                        btn.classList.remove('bg-gradient-to-r', 'from-[#1E6BFF]', 'to-[#00C2FF]', 'text-white', 'shadow-lg');
+                        btn.classList.add('text-slate-500', 'dark:text-slate-400');
+                    }
+                    const content = document.getElementById(`content-${t}`);
+                    t === tab ? content.classList.remove('hidden') : content.classList.add('hidden');
+                });
+            });
+        });
+
+        // --- Live API Form Submissions ---
+
+        // Contact Form Submit to MongoDB
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('contactSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Submitting...";
+
+            const payload = {
+                name: document.getElementById('contactName').value,
+                email: document.getElementById('contactEmail').value,
+                phone: document.getElementById('contactPhone').value || 'Not provided',
+                service: document.getElementById('contactService').options[document.getElementById('contactService').selectedIndex].text,
+                msg: document.getElementById('contactMsg').value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast("✅ Inquiry Saved to MongoDB successfully!");
+                    
+                    const feedback = document.getElementById('formFeedback');
+                    feedback.className = "flex p-4 rounded-xl text-xs mb-6 font-semibold items-center gap-2 bg-emerald-500/10 text-emerald-600 border border-emerald-500/20";
+                    feedback.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> Thanks! We received your message and saved it in our cloud database.`;
+                    feedback.classList.remove('hidden');
+                    lucide.createIcons();
+                    
+                    e.target.reset();
+                    setTimeout(() => feedback.classList.add('hidden'), 8000);
+                } else {
+                    throw new Error("API Failure");
+                }
+            } catch (err) {
+                showToast("❌ Server communication failed.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i data-lucide="send" class="w-3.5 h-3.5"></i> Submit Requirements`;
+                lucide.createIcons();
+            }
+        });
+
+        // Newsletter Subscription API
+        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            const payload = {
+                email: document.getElementById('newsletterInput').value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/newsletter`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    const feedback = document.getElementById('newsletterFeedback');
+                    feedback.innerText = "Thanks for subscribing to our live MongoDB updates!";
+                    feedback.classList.remove('hidden');
+                    e.target.reset();
+                    setTimeout(() => feedback.classList.add('hidden'), 5000);
+                }
+            } catch (err) {
+                showToast("❌ Subscription failed.");
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // --- Admin Controls Integration ---
+
+        const adminLoginModal = document.getElementById('adminLoginModal');
+        const adminDashboardOverlay = document.getElementById('adminDashboardOverlay');
+
+        // Hidden Portal Activation: Logo par 6 baar clicked karne se admin khulega
+        logoTrigger.addEventListener('click', (e) => {
+            logoClickCount++;
+            if (logoClickTimer) clearTimeout(logoClickTimer);
+            
+            if (logoClickCount >= 6) {
+                e.preventDefault();
+                adminLoginModal.classList.remove('hidden');
+                logoClickCount = 0;
+            } else {
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0;
+                }, 2000);
+            }
+        });
+
+        // Hide Portal access modal
+        document.getElementById('closeAdminLogin').addEventListener('click', () => adminLoginModal.classList.add('hidden'));
+
+        // Admin Auth & Portal Init
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            const submitBtn = document.getElementById('adminLoginSubmit');
+            const errorBox = document.getElementById('loginError');
+            
+            submitBtn.disabled = true;
+            errorBox.classList.add('hidden');
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.token) {
+                    isAdmin = true;
+                    adminToken = data.token;
+                    localStorage.setItem('udaanx_admin_token', adminToken);
+                    
+                    adminLoginModal.classList.add('hidden');
+                    document.getElementById('adminActivePill').classList.remove('hidden');
+                    adminDashboardOverlay.classList.remove('hidden');
+                    
+                    // Dashboard components populate karein
+                    await loadAdminQueries();
+                    renderSlideManagerList();
+                    e.target.reset();
+                } else {
+                    throw new Error(data.error || "Login credentials incorrect.");
+                }
+            } catch (err) {
+                errorBox.innerText = err.message;
+                errorBox.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Admin logout action
+        document.getElementById('closeAdminDashboard').addEventListener('click', () => {
+            adminDashboardOverlay.classList.add('hidden');
+        });
+
+        // Switch panel subviews
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetId = e.currentTarget.getAttribute('data-target');
+                
+                document.querySelectorAll('.admin-tab-btn').forEach(b => {
+                    b.classList.remove('bg-[#1E6BFF]/10', 'text-[#1E6BFF]', 'dark:text-cyan-400');
+                    b.classList.add('text-slate-600', 'dark:text-slate-400');
+                });
+                e.currentTarget.classList.add('bg-[#1E6BFF]/10', 'text-[#1E6BFF]', 'dark:text-cyan-400');
+                e.currentTarget.classList.remove('text-slate-600', 'dark:text-slate-400');
+
+                document.querySelectorAll('.admin-section').forEach(section => {
+                    section.classList.add('hidden');
+                    section.classList.remove('block');
+                });
+                document.getElementById(targetId).classList.add('block');
+                document.getElementById(targetId).classList.remove('hidden');
+            });
+        });
+
+        // Fetch & Load Queries in Panel
+        async function loadAdminQueries() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/queries`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                if (res.ok) {
+                    customerQueries = await res.json();
+                }
+            } catch (err) {
+                console.warn("Could not query DB logs.");
+            }
+            renderAdminQueries();
+        }
+
+        // Render queries dynamically
+        function renderAdminQueries() {
+            const list = document.getElementById('queriesList');
+            document.getElementById('totalQueriesCount').innerText = customerQueries.length;
+
+            if (customerQueries.length === 0) {
+                list.innerHTML = `<div class="p-8 text-center bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl"><p class="text-slate-500">No queries received yet.</p></div>`;
+                return;
+            }
+
+            list.innerHTML = customerQueries.map(q => `
+                <div class="bg-white dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-6 items-start">
+                    <div class="md:w-1/3 space-y-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">${q.date || 'Recent'}</span>
+                        <h4 class="text-base font-black text-slate-900 dark:text-white">${q.name}</h4>
+                        <div class="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 pt-1">
+                            <i data-lucide="mail" class="w-3.5 h-3.5"></i> ${q.email}
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                            <i data-lucide="phone" class="w-3.5 h-3.5"></i> ${q.phone}
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 border-l border-slate-200 dark:border-slate-800 pl-6 w-full">
+                        <span class="inline-block px-2.5 py-1 bg-cyan-500/10 text-blue-600 dark:text-cyan-400 text-[10px] font-bold uppercase tracking-wider rounded-md mb-2 border border-cyan-500/20">${q.service}</span>
+                        <p class="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50 whitespace-pre-wrap">${q.msg}</p>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        // Render Slides manager
+        function renderSlideManagerList() {
+            const list = document.getElementById('slideManagerList');
+            document.getElementById('slideCountDisplay').innerText = `${heroImages.length} Images`;
+            
+            if (heroImages.length === 0) {
+                list.innerHTML = `<p class="text-sm text-slate-500 italic col-span-2">No images in slideshow.</p>`;
+                return;
+            }
+
+            list.innerHTML = heroImages.map((img, idx) => `
+                <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl group relative overflow-hidden">
+                    <img src="${img}" class="absolute inset-0 w-full h-full object-cover opacity-30 blur-sm pointer-events-none" />
+                    <div class="absolute inset-0 bg-white/80 dark:bg-slate-950/80 z-0"></div>
+                    
+                    <div class="flex items-center gap-4 z-10 relative">
+                        <span class="text-xs font-black text-slate-900 dark:text-white w-4">${idx + 1}.</span>
+                        <img src="${img}" class="w-20 h-14 object-cover rounded-lg shadow-sm border border-slate-300 dark:border-slate-700" />
+                    </div>
+                    <button onclick="removeSlide(${idx})" class="z-10 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-bold hover:bg-red-500 hover:text-white transition-colors">
+                        Delete
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // New Slide Base64 converter and upload
+        document.getElementById('slideUploadInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    try {
+                        const res = await fetch(`${API_BASE_URL}/admin/slider`, {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${adminToken}`
+                            },
+                            body: JSON.stringify({ imageBase64: reader.result })
+                        });
+
+                        if (res.ok) {
+                            const data = await res.json();
+                            heroImages = data.heroImages;
+                            showToast("Image uploaded to database!");
+                            renderSlideshow();
+                            startSlideshow();
+                            renderSlideManagerList();
+                        }
+                    } catch (err) {
+                        showToast("Failed to upload slide");
+                    }
+                    e.target.value = ''; // Reset
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Slide Remove Trigger
+        window.removeSlide = async function(index) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/slider/${index}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    heroImages = data.heroImages;
+                    showToast("Slide removed from database");
+                    if (currentSlide >= heroImages.length) currentSlide = 0;
+                    renderSlideshow();
+                    startSlideshow();
+                    renderSlideManagerList();
+                }
+            } catch (err) {
+                showToast("Failed to delete slide");
+            }
+        };
+
+        // Live Contact Form Admin Panel Submission
+        document.getElementById('adminContactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('adminContactSubmitBtn');
+            submitBtn.disabled = true;
+
+            const payload = {
+                email: document.getElementById('adminInputEmail').value,
+                phone: document.getElementById('adminInputPhone').value,
+                location: document.getElementById('adminInputLocation').value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/contact`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    contactInfo = payload;
+                    applyContactInfoDOM();
+                    
+                    const feedback = document.getElementById('adminContactFeedback');
+                    feedback.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> Contact Information Updated in MongoDB Cloud Successfully!`;
+                    feedback.classList.remove('hidden');
+                    lucide.createIcons();
+                    
+                    setTimeout(() => feedback.classList.add('hidden'), 4000);
+                }
+            } catch (err) {
+                showToast("Failed to update contact info");
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Bootstrap App initialization
+        init();
+
+    </script>
+</body>
+</html>
