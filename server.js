@@ -16,15 +16,21 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'admin123'; // Fallback for local
 const DB_NAME = 'udaanx_db';
 
 let db, configCollection, queriesCollection, portfolioCollection, subscribersCollection;
+let dbConnected = false;
+let dbErrorMsg = "";
 
-// Database connection initialize karein
+// Database connection initialize karein (with auto-reconnect and error handling)
 async function initDB() {
     if (!MONGO_URI) {
         console.error('❌ MONGO_URI is not defined in environment variables');
-        process.exit(1);
+        dbErrorMsg = "MONGO_URI environment variable is missing on Render.";
+        return;
     }
     try {
-        const client = await MongoClient.connect(MONGO_URI);
+        const client = await MongoClient.connect(MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
         db = client.db(DB_NAME);
         
         configCollection = db.collection('configuration');
@@ -33,6 +39,7 @@ async function initDB() {
         subscribersCollection = db.collection('subscribers');
 
         console.log('✅ UdaanX Connected successfully to MongoDB Cloud Database (Atlas)');
+        dbConnected = true;
 
         // Seed Default Global Site Configuration agar pehle se empty hai
         const configCount = await configCollection.countDocuments();
@@ -65,15 +72,37 @@ async function initDB() {
         }
 
     } catch (error) {
-        console.error('❌ MongoDB initialization failed:', error);
-        process.exit(1);
+        console.error('❌ MongoDB Connection Failed:', error.message);
+        dbConnected = false;
+        dbErrorMsg = error.message;
     }
 }
 
 // Middlewares
-app.use(cors()); // Har origin se request allow karne ke liye safety ke saath
+app.use(cors()); // Global CORS enabled for safe communication
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Health Check API with Diagnostics for troubleshooting
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: "online",
+        database: dbConnected ? "connected" : "disconnected",
+        error: dbErrorMsg || null
+    });
+});
+
+// Guard Middleware - Database connectivity validation
+const checkDbConnection = (req, res, next) => {
+    if (!dbConnected) {
+        return res.status(503).json({ 
+            error: "Database Connection Offline", 
+            details: "Server is up but MongoDB connection failed. Please check IP Whitelist (0.0.0.0/0) on Atlas.",
+            raw: dbErrorMsg 
+        });
+    }
+    next();
+};
 
 // Auth Middleware (Admin APIs ki security ke liye)
 const adminAuth = (req, res, next) => {
@@ -81,7 +110,7 @@ const adminAuth = (req, res, next) => {
     if (authHeader && authHeader === `Bearer ${ADMIN_TOKEN}`) {
         next();
     } else {
-        res.status(401).json({ error: 'Unauthorized Access' });
+        res.status(401).json({ error: 'Unauthorized Access. Invalid token.' });
     }
 };
 
@@ -89,7 +118,7 @@ const adminAuth = (req, res, next) => {
 // PUBLIC API ENDPOINTS
 // ---------------------------------------------------------
 
-app.get('/api/config', async (req, res) => {
+app.get('/api/config', checkDbConnection, async (req, res) => {
     try {
         const config = await configCollection.findOne({ type: 'site_config' });
         if (!config) return res.status(404).json({ error: 'Configuration not found' });
@@ -99,7 +128,7 @@ app.get('/api/config', async (req, res) => {
     }
 });
 
-app.get('/api/portfolio', async (req, res) => {
+app.get('/api/portfolio', checkDbConnection, async (req, res) => {
     try {
         const projects = await portfolioCollection.find({}).toArray();
         res.json(projects);
@@ -108,12 +137,19 @@ app.get('/api/portfolio', async (req, res) => {
     }
 });
 
-app.post('/api/contact', async (req, res) => {
+app.post('/api/contact', checkDbConnection, async (req, res) => {
     const { name, email, phone, service, msg } = req.body;
     if (!name || !email || !msg) return res.status(400).json({ error: 'Name, email, and message are required.' });
 
     try {
-        const newQuery = { name, email, phone: phone || 'Not provided', service: service || 'General Inquiry', msg, date: new Date().toLocaleDateString() };
+        const newQuery = { 
+            name, 
+            email, 
+            phone: phone || 'Not provided', 
+            service: service || 'General Inquiry', 
+            msg, 
+            date: new Date().toLocaleDateString() 
+        };
         await queriesCollection.insertOne(newQuery);
         res.status(201).json({ message: 'Query saved successfully', query: newQuery });
     } catch (error) {
@@ -121,7 +157,7 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
-app.post('/api/newsletter', async (req, res) => {
+app.post('/api/newsletter', checkDbConnection, async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email is required' });
 
@@ -143,11 +179,11 @@ app.post('/api/admin/login', (req, res) => {
     if (username === 'admin' && password === ADMIN_TOKEN) {
         res.json({ message: 'Login successful', token: ADMIN_TOKEN });
     } else {
-        res.status(401).json({ error: 'Invalid credentials' });
+        res.status(401).json({ error: 'Invalid credentials. Please check your username or password.' });
     }
 });
 
-app.get('/api/admin/queries', adminAuth, async (req, res) => {
+app.get('/api/admin/queries', adminAuth, checkDbConnection, async (req, res) => {
     try {
         const queries = await queriesCollection.find({}).sort({ _id: -1 }).toArray();
         res.json(queries);
@@ -156,20 +192,20 @@ app.get('/api/admin/queries', adminAuth, async (req, res) => {
     }
 });
 
-app.put('/api/admin/contact', adminAuth, async (req, res) => {
+app.put('/api/admin/contact', adminAuth, checkDbConnection, async (req, res) => {
     const { email, phone, location } = req.body;
     try {
         await configCollection.updateOne(
             { type: 'site_config' },
             { $set: { "contactInfo.email": email, "contactInfo.phone": phone, "contactInfo.location": location } }
         );
-        res.json({ message: 'Contact details updated' });
+        res.json({ message: 'Contact details updated successfully.' });
     } catch (error) {
         res.status(500).json({ error: 'Update failed' });
     }
 });
 
-app.post('/api/admin/slider', adminAuth, async (req, res) => {
+app.post('/api/admin/slider', adminAuth, checkDbConnection, async (req, res) => {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ error: 'Image missing' });
 
@@ -182,7 +218,7 @@ app.post('/api/admin/slider', adminAuth, async (req, res) => {
     }
 });
 
-app.delete('/api/admin/slider/:index', adminAuth, async (req, res) => {
+app.delete('/api/admin/slider/:index', adminAuth, checkDbConnection, async (req, res) => {
     const index = parseInt(req.params.index, 10);
     try {
         const config = await configCollection.findOne({ type: 'site_config' });
@@ -191,14 +227,16 @@ app.delete('/api/admin/slider/:index', adminAuth, async (req, res) => {
             await configCollection.updateOne({ type: 'site_config' }, { $set: { heroImages: config.heroImages } });
             res.json({ message: 'Removed slider successfully', heroImages: config.heroImages });
         } else {
-            res.status(404).json({ error: 'Image index out of bounds' }); // FIXED: 'box' typo corrected to 'res'
+            res.status(404).json({ error: 'Image index out of bounds' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Could not access documents' });
     }
 });
 
-// Run server initialization
+// Run server initialization and start listening immediately (avoids Render cold-start port crash)
 initDB().then(() => {
-    app.listen(PORT, () => console.log(`🚀 UdaanX Server online at http://localhost:${PORT}`));
+    app.listen(PORT, () => {
+        console.log(`🚀 UdaanX Server online at http://localhost:${PORT}`);
+    });
 });
