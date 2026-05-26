@@ -254,7 +254,7 @@
                             </div>
                             <div>
                                 <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold font-mono tracking-wider">Direct Email</p>
-                                <a href="#" class="disp-email text-sm font-bold hover:underline">contact@udaanx.com</a>
+                                <a href="#" class="disp-email text-sm font-bold hover:underline font-mono">contact@udaanx.com</a>
                             </div>
                         </div>
 
@@ -264,7 +264,7 @@
                             </div>
                             <div>
                                 <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold font-mono tracking-wider">Call Us</p>
-                                <a href="#" class="disp-phone text-sm font-bold hover:underline">+91 98765 43210</a>
+                                <a href="#" class="disp-phone text-sm font-bold hover:underline font-mono">+91 98765 43210</a>
                             </div>
                         </div>
 
@@ -380,7 +380,7 @@
                             <h5 class="font-extrabold text-blue-600 dark:text-blue-400 mb-2.5 flex items-center gap-2">
                                 <i data-lucide="book-open" class="w-4 h-4"></i> What we support:
                             </h5>
-                            <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                            <ul class="space-y-2 text-slate-700 dark:text-slate-300 font-medium">
                                 <li>✓ Student Project Consultation</li>
                                 <li>✓ LaTeX Document Formatting</li>
                                 <li>✓ Clear Code Commenting & Explanations</li>
@@ -399,7 +399,7 @@
                             <h5 class="font-extrabold text-amber-600 dark:text-amber-400 mb-2.5 flex items-center gap-2">
                                 <i data-lucide="zap" class="w-4 h-4"></i> Technical Stacks:
                             </h5>
-                            <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                            <ul class="space-y-2 text-slate-700 dark:text-slate-300 font-medium">
                                 <li>✓ React.js & Tailwind CSS</li>
                                 <li>✓ Node.js & Express Backends</li>
                                 <li>✓ API Integrations & Database setups</li>
@@ -418,7 +418,7 @@
                             <h5 class="font-extrabold text-cyan-600 dark:text-cyan-400 mb-2.5 flex items-center gap-2">
                                 <i data-lucide="rocket" class="w-4 h-4"></i> Personal Branding tools:
                             </h5>
-                            <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                            <ul class="space-y-2 text-slate-700 dark:text-slate-300 font-medium">
                                 <li>✓ Clean Resume Layout Planning</li>
                                 <li>✓ Digital Visiting Cards with QR Code</li>
                                 <li>✓ Professional Portfolio Landing Pages</li>
@@ -436,8 +436,8 @@
                     <div class="flex items-center gap-3 mb-4">
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="Founder" class="w-10 h-10 rounded-full object-cover" />
                         <div>
-                            <h4 class="font-bold text-sm">A Note from Our Founder</h4>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Aaryan Vardhan, Founder</p>
+                            <h4 class="font-bold text-sm font-sans">A Note from Our Founder</h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Aaryan Vardhan, Founder</p>
                         </div>
                     </div>
                     <blockquote class="text-sm italic leading-relaxed text-slate-800 dark:text-slate-100">
@@ -527,7 +527,7 @@
                 <i data-lucide="shield" class="w-5 h-5 text-blue-600 dark:text-cyan-400"></i> Admin Access
             </h3>
             <form id="adminLoginForm" class="space-y-4">
-                <div id="loginError" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-lg border border-red-500/20"></div>
+                <div id="loginError" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-lg border border-red-500/20 whitespace-pre-line leading-relaxed"></div>
                 <div>
                     <label class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Username</label>
                     <input type="text" id="adminUser" class="w-full mt-1 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-cyan-500" required />
@@ -660,7 +660,7 @@
     <!-- JavaScript Application Logic -->
     <script>
         // --- API Configuration ---
-        // ✅ UPDATED: URL pointed directly to your active Render cloud server API endpoint
+        // Pointed securely to your render deployment
         const API_BASE_URL = 'https://udaanx06.onrender.com/api';
         let adminToken = localStorage.getItem('udaanx_admin_token') || null;
 
@@ -677,7 +677,6 @@
             { id: 'portfolio-sites', title: 'Portfolio & Personal Websites', icon: 'globe', desc: 'Simple, fast-loading personal portfolios to showcase your skills, resume, and accomplishments directly to employers.', color: 'from-blue-600 to-cyan-600', tags: ['Fast Load', 'Clean Design', 'Contact Forms', 'SEO Friendly'] }
         ];
 
-        // Fallback or Dynamic Portfolio Data
         let portfolioData = [];
 
         // Dynamic State Variables
@@ -698,7 +697,6 @@
         // --- Initialization & Data Fetching ---
 
         async function init() {
-            // Loading Spinner Or Local fallback init
             showToast("Connecting to live server...");
             await fetchSiteConfig();
             await fetchPortfolio();
@@ -712,10 +710,10 @@
                 htmlEl.classList.remove('dark');
             }
 
-            // Restore Admin Session if already logged in previously
             if (adminToken) {
                 isAdmin = true;
-                document.getElementById('adminActivePill').classList.remove('hidden');
+                const pill = document.getElementById('adminActivePill');
+                if (pill) pill.classList.remove('hidden');
             }
         }
 
@@ -730,7 +728,6 @@
                 }
             } catch (err) {
                 console.warn("Backend down. Using local fallback.");
-                // Load LocalStorage Backup if Server fails
                 const savedSlides = localStorage.getItem('udaanx_slider');
                 if (savedSlides) heroImages = JSON.parse(savedSlides);
                 else heroImages = [
@@ -758,7 +755,6 @@
                     throw new Error("No portfolio");
                 }
             } catch (err) {
-                // Mock Portfolio fallback
                 portfolioData = [
                     { id: 1, title: 'Student Portfolio Website', category: 'web', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', desc: 'A personal showcase website for a computer science graduate to display projects and get recruiter inquiries.' },
                     { id: 2, title: 'Digital Visiting Card for Consultant', category: 'branding', image: 'https://images.unsplash.com/photo-1589561084283-930aa7b1ce50?auto=format&fit=crop&w=800&q=80', desc: 'An interactive mobile-friendly profile with a downloadable contact file and links for a financial advisor.' },
@@ -847,7 +843,6 @@
             document.getElementById('adminInputLocation').value = contactInfo.location || '';
         }
 
-        // Slideshow rendering logic
         function renderSlideshow() {
             const container = document.getElementById('slideshowContainer');
             const dotsContainer = document.getElementById('slideshowDots');
@@ -913,7 +908,6 @@
         }
         window.goToSlide = goToSlide;
 
-        // Custom Toast Helper
         function showToast(message) {
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toast-text');
@@ -934,7 +928,6 @@
         const menuIcon = document.getElementById('menuIcon');
         const closeIcon = document.getElementById('closeIcon');
 
-        // Dark/Light Theme Switcher
         themeToggles.forEach(btn => {
             btn.addEventListener('click', () => {
                 htmlEl.classList.toggle('dark');
@@ -942,7 +935,6 @@
             });
         });
 
-        // Scroll Class Append
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 navbar.classList.add('bg-white/90', 'dark:bg-[#030914]/80', 'backdrop-blur-xl', 'shadow-lg', 'border-b', 'border-slate-200', 'dark:border-white/10');
@@ -954,7 +946,6 @@
             }
         });
 
-        // Mobile drawer toggles
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
             menuIcon.classList.toggle('hidden');
@@ -973,7 +964,6 @@
             });
         });
 
-        // Portfolio Navigation Filters
         document.querySelectorAll('.portfolio-tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.portfolio-tab-btn').forEach(b => {
@@ -987,7 +977,6 @@
             });
         });
 
-        // Process Phase Tab views
         const aboutTabs = ['learn', 'innovate', 'elevate'];
         aboutTabs.forEach(tab => {
             document.getElementById(`tab-${tab}`).addEventListener('click', () => {
@@ -1008,7 +997,6 @@
 
         // --- Live API Form Submissions ---
 
-        // Contact Form Submit to MongoDB
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('contactSubmitBtn');
@@ -1043,10 +1031,11 @@
                     e.target.reset();
                     setTimeout(() => feedback.classList.add('hidden'), 8000);
                 } else {
-                    throw new Error("API Failure");
+                    const errData = await res.json();
+                    throw new Error(errData.error || "Server issue.");
                 }
             } catch (err) {
-                showToast("❌ Server communication failed.");
+                showToast("❌ Server communication failed: " + err.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<i data-lucide="send" class="w-3.5 h-3.5"></i> Submit Requirements`;
@@ -1054,7 +1043,6 @@
             }
         });
 
-        // Newsletter Subscription API
         document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -1085,12 +1073,11 @@
             }
         });
 
-        // --- Admin Controls Integration ---
+        // --- Resilient Admin Portal Authentication with Troubleshooting Diagnostics ---
 
         const adminLoginModal = document.getElementById('adminLoginModal');
         const adminDashboardOverlay = document.getElementById('adminDashboardOverlay');
 
-        // Hidden Portal Activation: Logo par 6 baar clicked karne se admin khulega
         logoTrigger.addEventListener('click', (e) => {
             logoClickCount++;
             if (logoClickTimer) clearTimeout(logoClickTimer);
@@ -1106,10 +1093,8 @@
             }
         });
 
-        // Hide Portal access modal
         document.getElementById('closeAdminLogin').addEventListener('click', () => adminLoginModal.classList.add('hidden'));
 
-        // Admin Auth & Portal Init
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const user = document.getElementById('adminUser').value;
@@ -1118,14 +1103,21 @@
             const errorBox = document.getElementById('loginError');
             
             submitBtn.disabled = true;
+            submitBtn.innerText = "Connecting...";
             errorBox.classList.add('hidden');
 
             try {
+                // Pre-warm / Diagnose if the server is offline or sleeping
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 7000); // Trigger diagnostics quickly if Render is sleeping
+
                 const res = await fetch(`${API_BASE_URL}/admin/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: user, password: pass })
+                    body: JSON.stringify({ username: user, password: pass }),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
 
                 const data = await res.json();
                 if (res.ok && data.token) {
@@ -1137,27 +1129,48 @@
                     document.getElementById('adminActivePill').classList.remove('hidden');
                     adminDashboardOverlay.classList.remove('hidden');
                     
-                    // Dashboard components populate karein
                     await loadAdminQueries();
                     renderSlideManagerList();
                     e.target.reset();
                 } else {
-                    throw new Error(data.error || "Login credentials incorrect.");
+                    throw new Error(data.error || "Incorrect login credentials.");
                 }
             } catch (err) {
-                errorBox.innerText = err.message;
-                errorBox.classList.remove('hidden');
+                console.error("Login attempt failed:", err);
+                
+                // --- DIAGNOSTICS FOR FAILING TO FETCH ---
+                if (err.name === 'AbortError' || err.message.includes('Failed to fetch') || err.message.includes('fetch')) {
+                    errorBox.innerHTML = `<strong>⚠️ System Diagnostics:</strong>\n1. Render Server might be starting up from sleep (takes up to 1 minute).\n2. Please wait 30 seconds and click login again.\n\n<em>Trying to ping live server logs...</em>`;
+                    errorBox.classList.remove('hidden');
+                    
+                    // Ping server health to find exact issue
+                    try {
+                        const healthRes = await fetch(`${API_BASE_URL.replace('/api', '')}/api/health`);
+                        if (healthRes.ok) {
+                            const health = await healthRes.json();
+                            if (health.database === 'disconnected') {
+                                errorBox.innerHTML = `<strong>❌ Database Offline:</strong>\nServer is online, but cannot reach MongoDB Atlas.\n\n<strong>Solution:</strong> Please go to MongoDB Atlas -> Network Access, and allow access from anywhere (<code>0.0.0.0/0</code>). Render's outbound IPs must be whitelisted.`;
+                            } else {
+                                errorBox.innerHTML = `<strong>✅ Server is Awake!</strong>\nDatabase is connected. Your credentials might be wrong, or your Render deployment has a bad <code>ADMIN_TOKEN</code> env variable. Hint: check your Render Settings.`;
+                            }
+                        }
+                    } catch (pingErr) {
+                        errorBox.innerHTML = `<strong>❌ Server Unreachable (Offline):</strong>\nRender is still building or the app has completely crashed.\n\n<strong>Solution:</strong> Open Render Dashboard, click 'Deploy' -> 'Clear Cache & Redeploy' and watch the startup logs.`;
+                    }
+                } else {
+                    errorBox.innerText = "❌ Login Error: " + err.message;
+                    errorBox.classList.remove('hidden');
+                }
             } finally {
                 submitBtn.disabled = false;
+                submitBtn.innerText = "Login";
             }
         });
 
-        // Admin logout action
         document.getElementById('closeAdminDashboard').addEventListener('click', () => {
             adminDashboardOverlay.classList.add('hidden');
         });
 
-        // Switch panel subviews
         document.querySelectorAll('.admin-tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const targetId = e.currentTarget.getAttribute('data-target');
@@ -1178,7 +1191,6 @@
             });
         });
 
-        // Fetch & Load Queries in Panel
         async function loadAdminQueries() {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/queries`, {
@@ -1193,7 +1205,6 @@
             renderAdminQueries();
         }
 
-        // Render queries dynamically
         function renderAdminQueries() {
             const list = document.getElementById('queriesList');
             document.getElementById('totalQueriesCount').innerText = customerQueries.length;
@@ -1224,7 +1235,6 @@
             lucide.createIcons();
         }
 
-        // Render Slides manager
         function renderSlideManagerList() {
             const list = document.getElementById('slideManagerList');
             document.getElementById('slideCountDisplay').innerText = `${heroImages.length} Images`;
@@ -1250,7 +1260,6 @@
             `).join('');
         }
 
-        // New Slide Base64 converter and upload
         document.getElementById('slideUploadInput').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -1277,13 +1286,12 @@
                     } catch (err) {
                         showToast("Failed to upload slide");
                     }
-                    e.target.value = ''; // Reset
+                    e.target.value = '';
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Slide Remove Trigger
         window.removeSlide = async function(index) {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/slider/${index}`, {
@@ -1305,7 +1313,6 @@
             }
         };
 
-        // Live Contact Form Admin Panel Submission
         document.getElementById('adminContactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('adminContactSubmitBtn');
@@ -1345,7 +1352,6 @@
             }
         });
 
-        // Bootstrap App initialization
         init();
 
     </script>
