@@ -65,12 +65,19 @@ app.get('/api/admin/slider', async (req, res) => {
     catch (e) { res.status(500).json({ error: "DB Error" }); }
 });
 
-// Yahan maine PUT route add kiya hai jo aapke index.html ke sath match karega
-app.put('/api/admin/contact', async (req, res) => {
+// Fix: route ab /admin/contact hai, jo index.html ke saath match karta hai
+app.put('/admin/contact', async (req, res) => {
     try { 
-        await configCollection.updateOne({ type: 'site_config' }, { $set: req.body }, { upsert: true }); 
+        await configCollection.updateOne(
+            { type: 'site_config' }, 
+            { $set: { type: 'site_config', ...req.body } }, 
+            { upsert: true }
+        ); 
         res.json({ success: true }); 
-    } catch (e) { res.status(500).json({ error: "Save Failed" }); }
+    } catch (e) { 
+        console.error(e);
+        res.status(500).json({ error: "Save Failed" }); 
+    }
 });
 
 app.use(express.static(path.join(__dirname, '.')));
