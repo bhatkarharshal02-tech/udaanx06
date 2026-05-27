@@ -65,7 +65,8 @@ app.get('/api/admin/slider', async (req, res) => {
     catch (e) { res.status(500).json({ error: "DB Error" }); }
 });
 
-app.post('/api/admin/save-contact', async (req, res) => {
+// Yahan maine PUT route add kiya hai jo aapke index.html ke sath match karega
+app.put('/api/admin/contact', async (req, res) => {
     try { 
         await configCollection.updateOne({ type: 'site_config' }, { $set: req.body }, { upsert: true }); 
         res.json({ success: true }); 
@@ -82,6 +83,6 @@ initDB().then((connected) => {
     if (connected) {
         app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Server running on port ${PORT}`));
     } else {
-        process.exit(1); // Error hone par process band kar dein
+        process.exit(1);
     }
 });
