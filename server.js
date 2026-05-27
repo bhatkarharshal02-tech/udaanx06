@@ -35,18 +35,21 @@ async function initDB() {
 app.get('/api/health', (req, res) => res.json({ status: "ok" }));
 
 app.get('/api/config', async (req, res) => {
-    try { const config = await configCollection.findOne({ type: 'site_config' }); res.json(config); } 
-    catch (e) { res.status(500).json({ error: "DB Error" }); }
+    try { 
+        const config = await configCollection.findOne({ type: 'site_config' }); 
+        res.json(config); 
+    } catch (e) { res.status(500).json({ error: "DB Error" }); }
 });
 
 app.post('/api/admin/login', (req, res) => {
     const { username, password } = req.body;
     if (username === 'admin' && password === process.env.ADMIN_TOKEN) {
         res.json({ token: process.env.ADMIN_TOKEN });
-    } else { res.status(401).json({ error: 'Invalid' }); }
+    } else { 
+        res.status(401).json({ error: 'Invalid' }); 
+    }
 });
 
-// Missing Routes Added
 app.get('/api/portfolio', async (req, res) => {
     try { const data = await portfolioCollection.find({}).toArray(); res.json(data); } 
     catch (e) { res.status(500).json({ error: "DB Error" }); }
@@ -62,10 +65,11 @@ app.get('/api/admin/slider', async (req, res) => {
     catch (e) { res.status(500).json({ error: "DB Error" }); }
 });
 
-// POST routes for saving data
 app.post('/api/admin/save-contact', async (req, res) => {
-    try { await configCollection.updateOne({ type: 'site_config' }, { $set: req.body }, { upsert: true }); res.json({ success: true }); }
-    catch (e) { res.status(500).json({ error: "Save Failed" }); }
+    try { 
+        await configCollection.updateOne({ type: 'site_config' }, { $set: req.body }, { upsert: true }); 
+        res.json({ success: true }); 
+    } catch (e) { res.status(500).json({ error: "Save Failed" }); }
 });
 
 app.use(express.static(path.join(__dirname, '.')));
@@ -77,5 +81,7 @@ app.get(/^(?!\/api).*/, (req, res) => {
 initDB().then((connected) => {
     if (connected) {
         app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Server running on port ${PORT}`));
+    } else {
+        process.exit(1); // Error hone par process band kar dein
     }
 });
