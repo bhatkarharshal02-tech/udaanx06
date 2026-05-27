@@ -15,11 +15,10 @@ const MONGO_URI = process.env.MONGO_URI;
 const DB_NAME = 'udaanx_db';
 let db, configCollection, queriesCollection, portfolioCollection, subscribersCollection;
 
-// Database Initialize
+// Database Initialize - FIX: Return true/false
 async function initDB() {
     try {
         console.log("Connecting to MongoDB...");
-        // serverSelectionTimeoutMS badha rahe hain taaki connection timeout na ho
         const client = await MongoClient.connect(MONGO_URI, {
             serverSelectionTimeoutMS: 10000 
         });
@@ -30,13 +29,14 @@ async function initDB() {
         portfolioCollection = db.collection('portfolio');
         subscribersCollection = db.collection('subscribers');
         
-        dbConnected = true;
         console.log('✅ Database connected successfully!');
+        return true; // Yahan true return karna zaruri hai
     } catch (error) {
         console.error('❌ DATABASE CONNECTION ERROR:', error.message);
-        dbConnected = false;
+        return false; // Yahan false return karna zaruri hai
     }
 }
+
 // API Routes
 app.get('/api/health', (req, res) => res.json({ status: "ok" }));
 
@@ -47,7 +47,6 @@ app.get('/api/config', async (req, res) => {
     } catch (e) { res.status(500).json({ error: "DB Error" }); }
 });
 
-// Admin Login
 app.post('/api/admin/login', (req, res) => {
     const { username, password } = req.body;
     if (username === 'admin' && password === process.env.ADMIN_TOKEN) {
@@ -60,14 +59,15 @@ app.post('/api/admin/login', (req, res) => {
 // Static files and SPA setup
 app.use(express.static(path.join(__dirname, '.')));
 
-// Express 5.0 ke liye wildcard route fix:
 app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Server Start
+// Server Start - Ab ye code sahi se chalega
 initDB().then((connected) => {
     if (connected) {
         app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Server running on port ${PORT}`));
+    } else {
+        console.log("❌ Server start failed due to DB connection issue.");
     }
 });
