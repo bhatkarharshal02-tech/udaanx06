@@ -59,7 +59,9 @@ app.post('/api/admin/login', (req, res) => {
 
 // Static files and SPA setup
 app.use(express.static(path.join(__dirname, '.')));
-app.get('*', (req, res) => {
+
+// Express 5.0 ke liye wildcard route fix:
+app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
