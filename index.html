@@ -756,6 +756,66 @@
             `).join('');
         }
 
+        // Intelligent string parser that formats raw description texts into beautifully styled headings and structured list bullets
+        function formatProjectDescription(text) {
+            if (!text) return '';
+            
+            // 1. Process Markdown bold blocks (**text** -> strong styled tag)
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-slate-900 dark:text-white">$1</strong>');
+            
+            // 2. Split lines by linebreak to process paragraphs
+            let lines = html.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            let output = '';
+            
+            lines.forEach(line => {
+                // Bullet points & checklist markers regex
+                const bulletRegex = /(✅|✔|✓|📢|📄|📊|📱|🎯|✨|⭐|🔹|▪|•|⁃)/g;
+                const bulletMatches = line.match(bulletRegex) || [];
+                
+                // If a paragraph/line contains 3 or more stacked inline bullet items, we transform them dynamically
+                if (bulletMatches.length >= 3) {
+                    const firstMarkerIndex = line.search(/(✅|✔|✓|📢|📄|📊|📱|🎯|✨|⭐|🔹|▪|•|⁃)/);
+                    let leadingText = '';
+                    let bulletText = line;
+                    
+                    if (firstMarkerIndex > 0) {
+                        leadingText = line.substring(0, firstMarkerIndex).trim();
+                        bulletText = line.substring(firstMarkerIndex).trim();
+                    }
+                    
+                    if (leadingText) {
+                        if (leadingText.endsWith(':')) {
+                            output += `<h5 class="text-[11px] sm:text-xs font-black text-slate-900 dark:text-slate-200 mt-3 mb-1.5">${leadingText}</h5>`;
+                        } else {
+                            output += `<p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-2">${leadingText}</p>`;
+                        }
+                    }
+                    
+                    // Split bullet string using Lookahead regex so the matched markers are kept with their texts
+                    const items = bulletText.split(/(?=✅|✔|✓|📢|📄|📊|📱|🎯|✨|⭐|🔹|▪|•|⁃)/).map(i => i.trim()).filter(Boolean);
+                    
+                    output += `<ul class="my-2.5 space-y-1.5 pl-1.5 border-l-2 border-blue-500/15 dark:border-blue-400/20 ml-1">`;
+                    items.forEach(item => {
+                        output += `
+                            <li class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed py-0.5 flex items-start gap-1">
+                                <span>${item}</span>
+                            </li>
+                        `;
+                    });
+                    output += `</ul>`;
+                } else {
+                    // Regular text line check
+                    if (line.endsWith(':')) {
+                        output += `<h5 class="text-[11px] sm:text-xs font-black text-slate-900 dark:text-slate-200 mt-3 mb-1.5">${line}</h5>`;
+                    } else {
+                        output += `<p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">${line}</p>`;
+                    }
+                }
+            });
+            
+            return output;
+        }
+
         function renderPortfolio(filterCategory) {
             const grid = document.getElementById('portfolioGrid');
             const filtered = filterCategory === 'all' ? portfolioData : portfolioData.filter(p => p.category === filterCategory);
@@ -779,7 +839,9 @@
                         <div>
                             <span class="text-[9px] sm:text-[10px] uppercase font-bold text-blue-600 dark:text-cyan-400 tracking-wider font-mono">${proj.category} Work</span>
                             <h3 class="text-base sm:text-lg font-bold mt-1 group-hover:text-[#1E6BFF] dark:group-hover:text-cyan-400 transition-colors">${proj.title}</h3>
-                            <p class="text-[11px] sm:text-xs mt-2 text-slate-600 dark:text-slate-300 leading-relaxed">${proj.desc}</p>
+                            <div class="mt-2 text-slate-600 dark:text-slate-300">
+                                ${formatProjectDescription(proj.desc)}
+                            </div>
                         </div>
                         <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/60 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-[#1E6BFF]">
                             <span>View Project Setup</span>
@@ -997,7 +1059,7 @@
                 mobileMenu.classList.add('hidden');
                 menuIcon.classList.remove('hidden');
                 menuIcon.classList.add('block');
-                closeIcon.classList.add('hidden');
+                closeIcon.刻.add('hidden');
                 closeIcon.classList.remove('block');
             });
         });
@@ -1055,7 +1117,7 @@
                 });
 
                 if (res.ok) {
-                    showToast("✅ Inquiry Send successfully!");
+                    showToast("✅ Inquiry Saved to MongoDB successfully!");
                     const feedback = document.getElementById('formFeedback');
                     feedback.className = "flex p-3.5 sm:p-4 rounded-xl text-xs mb-6 font-semibold items-center gap-2 bg-emerald-500/10 text-emerald-600 border border-emerald-500/20";
                     feedback.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 shrink-0"></i> Thanks! We received your message.`;
