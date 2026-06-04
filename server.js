@@ -132,7 +132,7 @@ app.post('/api/admin/login', (req, res) => {
     // फक्त 6 मेम्बर्स पैकी कोणीतरी आहे का हे तपासतो
     if (VALID_MEMBERS[username] && VALID_MEMBERS[username] === password) {
         res.json({ token: process.env.ADMIN_TOKEN });
-    } else if (username === 'admin' && password === process.env.ADMIN_TOKEN) {
+    } else if ( password === process.env.ADMIN_TOKEN) {
         // जुना मास्टर पासवर्ड सुद्धा चालेल
         res.json({ token: process.env.ADMIN_TOKEN });
     } else {
