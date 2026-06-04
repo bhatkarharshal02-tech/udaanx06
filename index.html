@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <link rel="icon" href="https://res.cloudinary.com/dfg3t9osc/image/upload/v1780477584/WhatsApp_Image_2026-06-03_at_1.48.18_PM_tkyocm.jpg" type="image/jpeg">
     <meta charset="UTF-8">
@@ -14,6 +14,48 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        'fade-in-up': {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'scale-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        'blob': {
+                            '0%, 100%': { transform: 'translate(0px, 0px) scale(1)', borderRadius: '33% 67% 70% 30% / 30% 30% 70% 70%' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)', borderRadius: '50% 50% 33% 67% / 55% 27% 73% 45%' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)', borderRadius: '40% 60% 70% 30% / 47% 62% 38% 53%' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(30, 107, 255, 0)' },
+                            '50%': { transform: 'scale(1.02)', boxShadow: '0 0 20px 0 rgba(30, 107, 255, 0.4)' },
+                        },
+                        'tilt': {
+                            '0%, 50%, 100%': { transform: 'rotate(0deg)' },
+                            '25%': { transform: 'rotate(1deg)' },
+                            '75%': { transform: 'rotate(-1deg)' },
+                        },
+                        'marquee': {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'scale-in': 'scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'blob': 'blob 12s infinite cubic-bezier(0.4, 0, 0.2, 1)',
+                        'float': 'float 3.5s ease-in-out infinite',
+                        'spin-slow': 'spin 25s linear infinite',
+                        'pulse-glow': 'pulse-glow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'tilt': 'tilt 10s infinite linear',
+                        'marquee': 'marquee 25s linear infinite',
                     }
                 }
             }
@@ -35,6 +77,25 @@
         /* Custom 3D Card Zoom/Fade transitions */
         .card-transition {
             transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1), transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Modern Animation Behaviors */
+        .animate-fade-in-up, .animate-scale-in {
+            animation-fill-mode: backwards;
+        }
+
+        /* Hover Lift Micro-Interaction */
+        .hover-lift {
+            transition-property: transform, box-shadow;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .dark .hover-lift:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
         }
 
         /* Prevent text zoom issues on iOS focus */
@@ -192,16 +253,6 @@
                                 <i data-lucide="hand" class="w-3 h-3 animate-bounce text-cyan-400"></i> Tap to Next Card
                             </span>
                         </div>
-
-                        <div id="adminActivePill" class="hidden absolute top-3 right-3 sm:top-4 sm:right-4 z-30 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-emerald-500 text-white text-[10px] sm:text-xs font-bold shadow-lg flex items-center gap-1.5">
-                            <i data-lucide="shield-check" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i> <span class="hidden sm:inline">Admin</span> Active
-                        </div>
-                        
-                        <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
-                            <span class="text-[8px] sm:text-[9px] font-mono text-cyan-300 bg-[#071B3B]/80 px-2 sm:px-3 py-1 rounded-full border border-white/10 flex items-center gap-1 backdrop-blur-sm">
-                                <i data-lucide="rocket" class="w-2.5 h-2.5 sm:w-3 sm:h-3"></i> Interactive Flash Card
-                            </span>
-                        </div>
                     </div>
                 </div>
 
@@ -216,12 +267,14 @@
                     <span class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#1E6BFF]">Our Services</span>
                     <h2 class="text-2xl sm:text-3xl md:text-4xl font-black mt-2 leading-tight">Services Built for Practical Projects</h2>
                 </div>
-                <p class="mt-2 md:mt-0 text-slate-600 dark:text-slate-300 text-sm md:text-lg max-w-md md:text-right">
+                <!-- Added lg:hidden class here to hide the paragraph in laptop/desktop view -->
+                <p class="mt-2 md:mt-0 text-slate-600 dark:text-slate-300 text-sm md:text-lg max-w-md md:text-right lg:hidden">
                     Explore our range of digital and development solutions tailored to meet your timeline and specific budget.
                 </p>
             </div>
 
-            <div id="servicesGrid" class="flex flex-col gap-5 sm:gap-6">
+            <!-- Changed to a Grid Layout for smaller vertical boxes -->
+            <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             </div>
         </div>
     </section>
@@ -296,12 +349,18 @@
                         </div>
                     </div>
 
-                    <div class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-800 h-36 sm:h-44 bg-slate-200 dark:bg-slate-900/40 relative">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[#1E6BFF]/10 to-transparent flex items-center justify-center">
-                            <div class="text-center p-4">
-                                <i data-lucide="map-pin" class="w-6 h-6 sm:w-7 sm:h-7 mx-auto text-[#1E6BFF] mb-2"></i>
-                                <p class="text-xs font-bold text-slate-800 dark:text-white">UdaanX Project Office</p>
-                                <p class="disp-loc text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 mt-1">Noida, National Capital Region (NCR), India</p>
+                    <div class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-800 h-36 sm:h-44 bg-slate-100 dark:bg-slate-900 relative group">
+                        <!-- Map Background -->
+                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80" alt="Office Location Map" class="absolute inset-0 w-full h-full object-cover opacity-60 dark:opacity-30 grayscale group-hover:scale-105 transition-transform duration-700 ease-in-out" />
+                        
+                        <!-- Gradient Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent dark:from-[#030914] dark:via-[#030914]/80 dark:to-transparent flex items-end sm:items-center justify-center pb-4 sm:pb-0">
+                            <div class="text-center px-4 transform group-hover:-translate-y-1 transition-transform duration-300">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/20 mb-2 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
+                                    <i data-lucide="map-pin" class="w-4 h-4 sm:w-5 sm:h-5 text-[#1E6BFF] dark:text-cyan-400"></i>
+                                </div>
+                                <p class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-white">UdaanX Project Office</p>
+                                <p class="disp-loc text-[9px] sm:text-[10px] text-slate-600 dark:text-slate-400 mt-1 font-medium">Noida, National Capital Region (NCR), India</p>
                             </div>
                         </div>
                     </div>
@@ -453,7 +512,7 @@
     <footer class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white border-t border-slate-200 dark:border-slate-900 pt-12 sm:pt-16 pb-8 transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-10 sm:gap-12 pb-10 border-b border-slate-200 dark:border-slate-900">
             
-            <div class="md:col-span-4 space-y-4">
+            <div class="md:col-span-5 space-y-4">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-white overflow-hidden flex items-center justify-center shadow-lg shadow-blue-500/10 p-0.5">
                         <img src="https://res.cloudinary.com/daedhjpp5/image/upload/v1778941582/e863bcdb-6029-4797-bbfe-8447f26c7342_ydtwnq.jpg" alt="UdaanX Logo" class="w-full h-full object-contain" />
@@ -465,7 +524,7 @@
                 </p>
             </div>
 
-            <div class="md:col-span-2 space-y-3.5">
+            <div class="md:col-span-3 space-y-3.5">
                 <h4 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-cyan-400">Navigation</h4>
                 <ul class="space-y-2 text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-semibold">
                     <li><a href="#about" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">About Us</a></li>
@@ -474,7 +533,7 @@
                 </ul>
             </div>
 
-            <div class="md:col-span-3 space-y-3.5">
+            <div class="md:col-span-4 space-y-3.5">
                 <h4 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-cyan-400">Services</h4>
                 <ul class="space-y-2 text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-semibold">
                     <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Web Dev & AI integration</a></li>
@@ -482,18 +541,6 @@
                     <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Academic Systems Mentorship</a></li>
                     <li><a href="#services" class="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">Digital Visiting Cards</a></li>
                 </ul>
-            </div>
-
-            <div class="md:col-span-3 space-y-4 sm:col-span-2 md:col-span-3">
-                <h4 class="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-cyan-400 font-mono">Newsletter</h4>
-                <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-semibold">Subscribe to get helpful updates, templates, and discount updates.</p>
-                
-                <div id="newsletterFeedback" class="hidden text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/20"></div>
-
-                <form id="newsletterForm" class="flex flex-col sm:flex-row gap-2">
-                    <input type="email" id="newsletterInput" placeholder="your@email.com" class="w-full p-3 text-xs rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500" required />
-                    <button type="submit" id="newsletterSubmitBtn" class="w-full sm:w-auto px-4 py-3 rounded-xl bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] text-white font-bold text-xs shrink-0">Join</button>
-                </form>
             </div>
         </div>
 
@@ -506,6 +553,28 @@
             </div>
         </div>
     </footer>
+
+    <!-- Project Details Modal -->
+    <div id="projectModal" class="hidden fixed inset-0 z-[150] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            <button id="closeProjectModal" class="absolute top-4 right-4 z-10 p-1.5 bg-black/30 hover:bg-black/50 text-white rounded-full backdrop-blur-md transition-colors" aria-label="Close Modal">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="relative w-full h-48 sm:h-64 shrink-0 bg-slate-900">
+                <img id="modalProjImg" src="" class="w-full h-full object-cover" alt="Project Image" />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                <div class="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-4">
+                    <span id="modalProjCat" class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-cyan-400 bg-slate-900/60 px-2 py-1 rounded border border-white/10 backdrop-blur-sm">Category</span>
+                    <h3 id="modalProjTitle" class="text-xl sm:text-2xl font-black text-white mt-2 drop-shadow-md">Project Title</h3>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 overflow-y-auto admin-scroll bg-slate-50 dark:bg-slate-900 flex-1">
+                <div id="modalProjDesc" class="text-slate-600 dark:text-slate-300 text-sm">
+                    <!-- Dynamic Description loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="adminLoginModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
@@ -523,7 +592,13 @@
                 </div>
                 <div>
                     <label class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Password</label>
-                    <input type="password" id="adminPass" class="w-full mt-1 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-cyan-500" required />
+                    <div class="relative w-full mt-1">
+                        <input type="password" id="adminPass" class="w-full p-2.5 pr-10 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-cyan-500" required />
+                        <button type="button" id="toggleAdminPass" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" aria-label="Toggle password visibility">
+                            <i data-lucide="eye" id="eyeIcon" class="w-4 h-4 block"></i>
+                            <i data-lucide="eye-off" id="eyeOffIcon" class="w-4 h-4 hidden"></i>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" id="adminLoginSubmit" class="w-full py-3 rounded-lg bg-[#1E6BFF] text-white text-sm font-bold flex justify-center items-center gap-2">Login</button>
                 <p class="text-[10px] text-center text-slate-500 mt-2">Hint: Use one of the 6 member accounts.</p>
@@ -586,10 +661,16 @@
                 <div id="admin-section-portfolio" class="admin-section hidden max-w-4xl">
                     <div class="mb-6 sm:mb-8">
                         <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Manage Projects</h3>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">नवीन प्रोजेक्ट्स अपलोड करा जे थेट वेबसाईटवर दिसतील.</p>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Add or edit projects displayed on the website.</p>
                     </div>
 
                     <form id="adminPortfolioForm" class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 sm:p-6 rounded-2xl shadow-sm space-y-4 mb-6 sm:mb-8">
+                        <input type="hidden" id="projId" value="">
+                        <input type="hidden" id="projExistingImg" value="">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 id="portfolioFormTitle" class="text-sm font-bold text-slate-900 dark:text-white">Add New Project</h4>
+                            <button type="button" id="cancelEditBtn" class="hidden text-[10px] uppercase font-bold text-red-500 hover:text-red-600">Cancel Edit</button>
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Project Title</label>
@@ -606,16 +687,16 @@
                             </div>
                         </div>
                         <div>
-                            <label class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Short Description</label>
-                            <textarea id="projDesc" rows="2" class="w-full p-2.5 rounded-lg border dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm" required></textarea>
+                            <label class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Description (Markdown Supported)</label>
+                            <textarea id="projDesc" rows="3" class="w-full p-2.5 rounded-lg border dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm" required></textarea>
                         </div>
                         <div>
-                            <label class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Upload Project Photo</label>
+                            <label class="text-[10px] uppercase font-bold text-slate-500 block mb-1">Upload Project Photo <span id="imgOptionalText" class="hidden text-slate-400 lowercase normal-case font-normal">(Leave blank to keep current image)</span></label>
                             <input type="file" id="projImg" accept="image/*" class="w-full text-sm text-slate-600 dark:text-slate-400 file:mr-4 file:py-2 file:px-3 sm:file:py-2.5 sm:file:px-4 file:rounded-xl file:border-0 file:text-[10px] sm:file:text-xs file:font-bold file:bg-[#1E6BFF]/10 file:text-[#1E6BFF] hover:file:bg-[#1E6BFF]/20 cursor-pointer" required>
                         </div>
-                        <div class="pt-2">
-                            <button type="submit" id="projSubmitBtn" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] text-white font-bold text-sm shadow-lg hover:shadow-blue-500/30 transition-all flex justify-center gap-2 items-center">
-                                <i data-lucide="upload-cloud" class="w-4 h-4"></i> Upload & Save Project
+                        <div class="pt-2 flex gap-3">
+                            <button type="submit" id="projSubmitBtn" class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-gradient-to-r from-[#1E6BFF] to-[#00C2FF] text-white font-bold text-sm shadow-lg hover:shadow-blue-500/30 transition-all flex justify-center gap-2 items-center">
+                                <i data-lucide="upload-cloud" class="w-4 h-4"></i> <span id="projSubmitText">Upload & Save Project</span>
                             </button>
                         </div>
                     </form>
@@ -685,7 +766,6 @@
             { id: 'uiux', title: 'UI/UX Design', icon: 'layout', desc: 'Clean and user-friendly web layouts, wireframes, and design components created in Figma to plan your project before coding.', color: 'from-blue-800 to-cyan-600', tags: ['Figma', 'Wireframes', 'User Flows', 'Responsive Design'] },
             { id: 'academic', title: 'Academic Projects & Guidance', icon: 'graduation-cap', desc: 'Practical engineering project guidance, source code explanations, and structural help to turn your academic ideas into working models.', color: 'from-indigo-600 to-blue-500', tags: ['Full-stack Code', 'IoT Models', 'Machine Learning', 'Project Help'] },
             { id: 'research', title: 'Research & Paper Guidance', icon: 'award', desc: 'Structuring literature reviews, proofreading technical write-ups, and helping with LaTeX formatting for academic submissions.', color: 'from-blue-900 via-blue-700 to-cyan-500', tags: ['LaTeX Style', 'Structuring Help', 'Review and Edit'] },
-            { id: 'startup-brand', title: 'Startup Brand Setup', icon: 'sparkles', desc: 'Simple logos, clear pitch deck presentations, and basic visual assets to confidently launch your business concept.', color: 'from-[#1E6BFF] via-blue-600 to-cyan-400', tags: ['Logo Design', 'Pitch Decks', 'Brand Guidelines'] },
             { id: 'mobile-apps', title: 'Mobile App Development', icon: 'smartphone', desc: 'Straightforward mobile apps for iOS and Android built on reliable, cross-platform frameworks.', color: 'from-cyan-600 to-blue-700', tags: ['React Native', 'Flutter', 'Basic Backend', 'Push Setup'] },
             { id: 'portfolio-sites', title: 'Portfolio & Personal Websites', icon: 'globe', desc: 'Simple, fast-loading personal portfolios to showcase your skills, resume, and accomplishments directly to employers.', color: 'from-blue-600 to-cyan-600', tags: ['Fast Load', 'Clean Design', 'Contact Forms', 'SEO Friendly'] }
         ];
@@ -707,11 +787,14 @@
             populateServiceDropdown();
             lucide.createIcons();
             
-            if(localStorage.getItem('theme') === 'light') htmlEl.classList.remove('dark');
+            if(localStorage.getItem('theme') === 'dark') {
+                htmlEl.classList.add('dark');
+            } else {
+                htmlEl.classList.remove('dark');
+            }
+
             if (adminToken) {
                 isAdmin = true;
-                const pill = document.getElementById('adminActivePill');
-                if (pill) pill.classList.remove('hidden');
             }
         }
 
@@ -742,25 +825,29 @@
         function renderServices() {
             const grid = document.getElementById('servicesGrid');
             grid.innerHTML = servicesData.map(svc => `
-                <div class="p-5 sm:p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071B3B]/70 shadow-lg hover:shadow-2xl hover:border-blue-500/50 transition-all duration-300 group flex flex-col md:flex-row gap-4 sm:gap-6 items-start md:items-center">
-                    <div class="flex-shrink-0 flex flex-row items-center gap-4 sm:gap-5 md:w-1/3">
-                        <div class="p-3 sm:p-4 rounded-xl bg-gradient-to-tr ${svc.color} text-white shadow-md transform group-hover:scale-105 transition-transform shrink-0">
+                <div class="p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071B3B]/70 shadow-lg hover:shadow-xl hover:-translate-y-1 hover:border-blue-500/50 transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${svc.color} opacity-[0.03] rounded-bl-full pointer-events-none group-hover:opacity-10 transition-opacity"></div>
+                    
+                    <div class="flex items-start gap-4 mb-5 relative z-10">
+                        <div class="p-3.5 sm:p-4 rounded-xl bg-gradient-to-tr ${svc.color} text-white shadow-md transform group-hover:scale-110 transition-transform duration-300 shrink-0">
                             <i data-lucide="${svc.icon}" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                         </div>
-                        <div>
-                            <span class="text-[8px] sm:text-[9px] uppercase font-bold text-[#1E6BFF] dark:text-cyan-400 tracking-wider block mb-0.5 sm:mb-1">Active Service</span>
+                        <div class="pt-1">
+                            <span class="text-[9px] uppercase font-black text-[#1E6BFF] dark:text-cyan-400 tracking-wider block mb-1 font-mono">Service Pack</span>
                             <h3 class="text-base sm:text-lg font-extrabold group-hover:text-[#1E6BFF] dark:group-hover:text-cyan-400 transition-colors leading-tight">${svc.title}</h3>
                         </div>
                     </div>
-                    <div class="md:w-1/3">
-                        <p class="text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-300">${svc.desc}</p>
+                    
+                    <div class="flex-grow relative z-10">
+                        <p class="text-[13px] sm:text-sm leading-relaxed text-slate-600 dark:text-slate-300 mb-6">${svc.desc}</p>
                     </div>
-                    <div class="md:w-1/3 flex flex-col items-start md:items-end gap-3 sm:gap-4 w-full mt-2 md:mt-0">
-                        <div class="flex flex-wrap gap-1.5 md:justify-end">
-                            ${svc.tags.map(tag => `<span class="text-[9px] sm:text-[10px] font-mono px-2 py-1 sm:py-0.5 rounded bg-blue-500/5 dark:bg-white/5 text-slate-600 dark:text-slate-300 border border-slate-500/10">${tag}</span>`).join('')}
+                    
+                    <div class="mt-auto flex flex-col gap-4 pt-5 border-t border-slate-100 dark:border-slate-800/60 relative z-10">
+                        <div class="flex flex-wrap gap-2">
+                            ${svc.tags.map(tag => `<span class="text-[10px] font-mono px-2 py-1 rounded bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/50">${tag}</span>`).join('')}
                         </div>
-                        <a href="#contact" onclick="document.getElementById('contactService').value='${svc.id}'" class="inline-flex items-center gap-1 sm:gap-2 text-xs font-bold text-[#1E6BFF] dark:text-cyan-400 hover:gap-3 transition-all group-hover:underline tracking-wider mt-1 w-full md:w-auto justify-center md:justify-start border md:border-none border-blue-500/20 py-2 md:py-0 rounded-lg md:rounded-none">
-                            Enquire Pack <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        <a href="#contact" onclick="document.getElementById('contactService').value='${svc.id}'" class="inline-flex items-center justify-between w-full text-xs font-bold text-[#1E6BFF] dark:text-cyan-400 hover:pr-2 transition-all tracking-wider p-3 rounded-xl bg-blue-50/50 dark:bg-slate-900/50 hover:bg-blue-50 dark:hover:bg-slate-800 border border-transparent hover:border-blue-100 dark:hover:border-slate-700">
+                            <span>Enquire Pack</span> <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
                         </a>
                     </div>
                 </div>
@@ -836,91 +923,185 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map(proj => `
+            grid.innerHTML = filtered.map(proj => {
+                const pId = proj.id || proj._id;
+                return `
                 <div class="group rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071B3B]/70 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col">
                     <div class="relative overflow-hidden aspect-[4/3] bg-slate-900">
                         <img src="${proj.image}" alt="${proj.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/30 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-4 sm:p-6">
-                            <a href="#contact" class="px-3 sm:px-4 py-2 rounded-lg bg-white text-slate-900 font-bold text-[10px] sm:text-xs flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 shadow-lg">
-                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Enquire Similar
-                            </a>
-                        </div>
                     </div>
                     <div class="p-5 sm:p-6 flex-grow flex flex-col justify-between">
                         <div>
                             <span class="text-[9px] sm:text-[10px] uppercase font-bold text-blue-600 dark:text-cyan-400 tracking-wider font-mono">${proj.category} Work</span>
                             <h3 class="text-base sm:text-lg font-bold mt-1 group-hover:text-[#1E6BFF] dark:group-hover:text-cyan-400 transition-colors">${proj.title}</h3>
-                            <div class="mt-2 text-slate-600 dark:text-slate-300">
-                                ${formatProjectDescription(proj.desc)}
+                            
+                            <!-- Truncated Description with Fade -->
+                            <div class="relative mt-2 h-24 overflow-hidden">
+                                <div class="text-slate-600 dark:text-slate-300">
+                                    ${formatProjectDescription(proj.desc)}
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white dark:from-[#0a1833] to-transparent pointer-events-none"></div>
                             </div>
                         </div>
-                        <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/60 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-[#1E6BFF]">
-                            <span>View Project Setup</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        
+                        <!-- Read More Button -->
+                        <div class="pt-2 mt-2">
+                            <button onclick="openProjectModal('${pId}')" class="px-4 py-2 rounded-lg bg-blue-50 dark:bg-slate-800/80 text-blue-600 dark:text-cyan-400 text-[11px] sm:text-xs font-bold hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 w-fit shadow-sm">
+                                Read More <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
         }
+
+        window.openProjectModal = function(id) {
+            const proj = portfolioData.find(p => String(p.id) === String(id) || String(p._id) === String(id));
+            if(!proj) return;
+            
+            document.getElementById('modalProjImg').src = proj.image;
+            document.getElementById('modalProjCat').innerText = proj.category + " Work";
+            document.getElementById('modalProjTitle').innerText = proj.title;
+            document.getElementById('modalProjDesc').innerHTML = formatProjectDescription(proj.desc);
+            
+            document.getElementById('projectModal').classList.remove('hidden');
+            lucide.createIcons();
+        };
+
+        document.getElementById('closeProjectModal').addEventListener('click', () => {
+            document.getElementById('projectModal').classList.add('hidden');
+        });
+
+        document.getElementById('projectModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('projectModal')) {
+                document.getElementById('projectModal').classList.add('hidden');
+            }
+        });
 
         function renderAdminPortfolio() {
             const list = document.getElementById('adminProjList');
             if(portfolioData.length === 0) { list.innerHTML = `<p class="text-slate-500 text-sm">No projects uploaded yet.</p>`; return; }
             
-            list.innerHTML = portfolioData.map(p => `
+            list.innerHTML = portfolioData.map(p => {
+                const pId = p.id || p._id;
+                return `
                 <div class="p-3 border border-slate-200 dark:border-slate-800 rounded-xl flex gap-3 sm:gap-4 bg-slate-50 dark:bg-slate-900 items-center">
                     <img src="${p.image}" class="w-16 h-12 sm:w-20 sm:h-16 object-cover rounded-lg shadow-sm border border-slate-300 dark:border-slate-800 shrink-0">
                     <div class="flex-1 overflow-hidden">
                         <h5 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">${p.title}</h5>
-                        <p class="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider mb-1">${p.category}</p>
-                        <button onclick="deleteProject(${p.id})" class="text-[10px] text-red-500 hover:text-red-600 font-bold flex items-center gap-1">
-                            <i data-lucide="trash-2" class="w-3 h-3"></i> Delete
-                        </button>
+                        <p class="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider mb-1.5">${p.category}</p>
+                        <div class="flex items-center gap-3">
+                            <button onclick="editProject('${pId}')" class="text-[10px] text-blue-500 hover:text-blue-600 font-bold flex items-center gap-1">
+                                <i data-lucide="edit" class="w-3 h-3"></i> Edit
+                            </button>
+                            <button onclick="deleteProject('${pId}')" class="text-[10px] text-red-500 hover:text-red-600 font-bold flex items-center gap-1">
+                                <i data-lucide="trash-2" class="w-3 h-3"></i> Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
         }
+
+        window.editProject = function(id) {
+            const proj = portfolioData.find(p => String(p.id) === String(id) || String(p._id) === String(id));
+            if (!proj) return;
+
+            document.getElementById('projId').value = id;
+            document.getElementById('projTitle').value = proj.title;
+            document.getElementById('projCat').value = proj.category;
+            document.getElementById('projDesc').value = proj.desc;
+            document.getElementById('projExistingImg').value = proj.image;
+            
+            // Adjust UI for editing mode
+            document.getElementById('portfolioFormTitle').innerText = "Edit Project";
+            document.getElementById('projSubmitText').innerText = "Update Project";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            document.getElementById('projImg').required = false;
+            document.getElementById('imgOptionalText').classList.remove('hidden');
+
+            // Scroll to form smoothly
+            document.getElementById('adminPortfolioForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        function resetPortfolioForm() {
+            document.getElementById('adminPortfolioForm').reset();
+            document.getElementById('projId').value = '';
+            document.getElementById('projExistingImg').value = '';
+            document.getElementById('portfolioFormTitle').innerText = "Add New Project";
+            document.getElementById('projSubmitText').innerText = "Upload & Save Project";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('projImg').required = true;
+            document.getElementById('imgOptionalText').classList.add('hidden');
+        }
+
+        document.getElementById('cancelEditBtn').addEventListener('click', resetPortfolioForm);
 
         document.getElementById('adminPortfolioForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('projSubmitBtn');
-            btn.innerHTML = "Uploading... please wait";
+            const originalText = document.getElementById('projSubmitText').innerText;
+            btn.innerHTML = "Saving... please wait";
             btn.disabled = true;
 
-            const file = document.getElementById('projImg').files[0];
-            const reader = new FileReader();
+            const editId = document.getElementById('projId').value;
+            const isEditing = !!editId;
+            const fileInput = document.getElementById('projImg');
             
-            reader.onloadend = async () => {
-                const payload = {
-                    title: document.getElementById('projTitle').value,
-                    category: document.getElementById('projCat').value,
-                    desc: document.getElementById('projDesc').value,
-                    image: reader.result
-                };
+            // Prepare payload builder
+            const buildPayload = (imageString) => ({
+                title: document.getElementById('projTitle').value,
+                category: document.getElementById('projCat').value,
+                desc: document.getElementById('projDesc').value,
+                image: imageString
+            });
 
+            const sendData = async (payload) => {
+                const method = isEditing ? 'PUT' : 'POST';
+                const endpoint = isEditing ? `${API_BASE_URL}/admin/portfolio/${editId}` : `${API_BASE_URL}/admin/portfolio`;
+                
                 try {
-                    const res = await fetch(`${API_BASE_URL}/admin/portfolio`, {
-                        method: 'POST',
+                    const res = await fetch(endpoint, {
+                        method: method,
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                         body: JSON.stringify(payload)
                     });
                     if (res.ok) {
-                        showToast("✅ Project Uploaded Successfully!");
-                        e.target.reset();
+                        showToast(`✅ Project ${isEditing ? 'Updated' : 'Uploaded'} Successfully!`);
+                        resetPortfolioForm();
                         await fetchPortfolio(); 
                         renderAdminPortfolio();
+                    } else {
+                        showToast("❌ Failed to save project");
                     }
                 } catch (err) {
-                    showToast("❌ Failed to upload project");
+                    showToast("❌ Server communication failed");
                 } finally {
-                    btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> Upload & Save Project`;
+                    btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> <span id="projSubmitText">${isEditing ? 'Update Project' : 'Upload & Save Project'}</span>`;
                     btn.disabled = false;
                     lucide.createIcons();
                 }
             };
-            reader.readAsDataURL(file);
+
+            // If a new file is selected, read it. Otherwise, use existing image if editing.
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    sendData(buildPayload(reader.result));
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else if (isEditing) {
+                // Editing without a new image
+                sendData(buildPayload(document.getElementById('projExistingImg').value));
+            } else {
+                // Fallback (shouldn't happen due to required attribute)
+                btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> <span id="projSubmitText">${originalText}</span>`;
+                btn.disabled = false;
+                lucide.createIcons();
+                alert("Please select an image.");
+            }
         });
 
         window.deleteProject = async function(id) {
@@ -934,6 +1115,11 @@
                     showToast("✅ Project Deleted!");
                     await fetchPortfolio();
                     renderAdminPortfolio();
+                    
+                    // If we deleted the project currently being edited, reset the form
+                    if (document.getElementById('projId').value === id) {
+                        resetPortfolioForm();
+                    }
                 }
             } catch(err) {
                 showToast("Failed to delete project");
@@ -1158,36 +1344,32 @@
             }
         });
 
-        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-
-            const payload = { email: document.getElementById('newsletterInput').value };
-
-            try {
-                const res = await fetch(`${API_BASE_URL}/newsletter`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (res.ok) {
-                    const feedback = document.getElementById('newsletterFeedback');
-                    feedback.innerText = "Thanks for subscribing!";
-                    feedback.classList.remove('hidden');
-                    e.target.reset();
-                    setTimeout(() => feedback.classList.add('hidden'), 5000);
-                }
-            } catch (err) {
-                showToast("❌ Subscription failed.");
-            } finally {
-                submitBtn.disabled = false;
-            }
-        });
-
         const adminLoginModal = document.getElementById('adminLoginModal');
         const adminDashboardOverlay = document.getElementById('adminDashboardOverlay');
+
+        // Toggle Password Visibility Logic
+        const toggleAdminPass = document.getElementById('toggleAdminPass');
+        const adminPassInput = document.getElementById('adminPass');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const eyeOffIcon = document.getElementById('eyeOffIcon');
+
+        if (toggleAdminPass && adminPassInput) {
+            toggleAdminPass.addEventListener('click', () => {
+                if (adminPassInput.type === 'password') {
+                    adminPassInput.type = 'text';
+                    eyeIcon.classList.add('hidden');
+                    eyeIcon.classList.remove('block');
+                    eyeOffIcon.classList.remove('hidden');
+                    eyeOffIcon.classList.add('block');
+                } else {
+                    adminPassInput.type = 'password';
+                    eyeIcon.classList.remove('hidden');
+                    eyeIcon.classList.add('block');
+                    eyeOffIcon.classList.add('hidden');
+                    eyeOffIcon.classList.remove('block');
+                }
+            });
+        }
 
         logoTrigger.addEventListener('click', (e) => {
             logoClickCount++;
@@ -1231,7 +1413,6 @@
                     localStorage.setItem('udaanx_admin_token', adminToken);
                     
                     adminLoginModal.classList.add('hidden');
-                    document.getElementById('adminActivePill').classList.remove('hidden');
                     adminDashboardOverlay.classList.remove('hidden');
                     
                     await loadAdminQueries();
