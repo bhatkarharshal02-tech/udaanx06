@@ -3,7 +3,8 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const express = require('express');
 const cors = require('cors');
-const { MongoClient } = require('mongodb');
+// ObjectId इम्पोर्ट करणे आवश्यक आहे जेणेकरून MongoDB चे _id योग्यरित्या डिलीट करता येतील
+const { MongoClient, ObjectId } = require('mongodb');
 const path = require('path');
 require('dotenv').config();
 
@@ -104,7 +105,7 @@ app.get('/api/config', async (req, res) => {
 app.get('/api/portfolio', async (req, res) => {
     try { 
         // मेन पेजवर प्रोजेक्ट्स दाखवण्यासाठी
-        const data = await portfolioCollection.find({}).sort({ id: -1 }).toArray(); 
+        const data = await portfolioCollection.find({}).sort({ id: -1, _id: -1 }).toArray(); 
         res.json(data); 
     } catch (e) { res.status(500).json({ error: "DB Error" }); }
 });
@@ -147,6 +148,30 @@ app.get('/api/admin/queries', verifyAdmin, async (req, res) => {
     } catch (e) { res.status(500).json({ error: "DB Error" }); }
 });
 
+// नवीन: क्वेरी (Inquiry) डिलीट करण्यासाठी राऊट
+app.delete('/api/admin/queries/:id', verifyAdmin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        let filter;
+        
+        // MongoDB चा _id आहे की कस्टम id हे तपासण्यासाठी
+        if (ObjectId.isValid(id)) {
+            filter = { _id: new ObjectId(id) };
+        } else {
+            filter = { id: id };
+        }
+
+        const result = await queriesCollection.deleteOne(filter);
+        if (result.deletedCount === 1) {
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ error: "Inquiry not found in database." });
+        }
+    } catch (e) { 
+        res.status(500).json({ error: "Failed to delete inquiry" }); 
+    }
+});
+
 app.put('/api/admin/contact', verifyAdmin, async (req, res) => {
     try { 
         await configCollection.updateOne(
@@ -186,7 +211,7 @@ app.delete('/api/admin/slider/:index', verifyAdmin, async (req, res) => {
     } catch (e) { res.status(500).json({ error: "Failed to delete slide" }); }
 });
 
-// नवीन: ॲडमिन कडून प्रोजेक्ट ऍड करण्यासाठी
+// ॲडमिन कडून प्रोजेक्ट ऍड करण्यासाठी
 app.post('/api/admin/portfolio', verifyAdmin, async (req, res) => {
     try {
         const newProject = {
@@ -201,13 +226,60 @@ app.post('/api/admin/portfolio', verifyAdmin, async (req, res) => {
     } catch (e) { res.status(500).json({ error: "Failed to add project" }); }
 });
 
-// नवीन: ॲडमिन कडून प्रोजेक्ट डिलीट करण्यासाठी
+// नवीन: ॲडमिन कडून प्रोजेक्ट अपडेट/एडिट (Edit) करण्यासाठी
+app.put('/api/admin/portfolio/:id', verifyAdmin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        let filter;
+
+        if (ObjectId.isValid(id)) {
+            filter = { _id: new ObjectId(id) };
+        } else {
+            filter = { id: parseInt(id) };
+        }
+
+        const updateData = {
+            title: req.body.title,
+            category: req.body.category,
+            desc: req.body.desc,
+            image: req.body.image
+        };
+
+        const result = await portfolioCollection.updateOne(filter, { $set: updateData });
+        
+        if (result.matchedCount === 1) {
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ error: "Project not found to edit." });
+        }
+    } catch (e) {
+        res.status(500).json({ error: "Failed to update project" });
+    }
+});
+
+// ॲडमिन कडून प्रोजेक्ट डिलीट करण्यासाठी (आता ObjectId व Timestamp दोन्ही सपोर्ट करेल)
 app.delete('/api/admin/portfolio/:id', verifyAdmin, async (req, res) => {
     try {
-        const projId = parseInt(req.params.id);
-        await portfolioCollection.deleteOne({ id: projId });
-        res.json({ success: true });
-    } catch (e) { res.status(500).json({ error: "Failed to delete project" }); }
+        const id = req.params.id;
+        let filter;
+
+        // MongoDB चा अंगभूत _id सपोर्ट
+        if (ObjectId.isValid(id) && id.length === 24) {
+            filter = { _id: new ObjectId(id) };
+        } else {
+            // जर जुने Timestamp वाले IDs असतील तर
+            filter = { id: parseInt(id) }; 
+        }
+
+        const result = await portfolioCollection.deleteOne(filter);
+        if (result.deletedCount === 1) {
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ error: "Project not found to delete." });
+        }
+    } catch (e) { 
+        res.status(500).json({ error: "Failed to delete project" }); 
+    }
 });
 
 // Serve Frontend Files
